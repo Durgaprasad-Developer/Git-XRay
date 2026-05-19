@@ -34,6 +34,7 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
   const [barsAnimated, setBarsAnimated] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [showAllRepos, setShowAllRepos] = useState(false);
+  const [showToolbox, setShowToolbox] = useState(false);
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -47,7 +48,7 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard, headlines, highestImpactFix } = report;
+  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard, headlines, highestImpactFix, scoreExplainability, positionMatch } = report;
 
   const subscores = [
     { label: "Overall Score", value: scores.overall },
@@ -109,6 +110,36 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                   return firstSentence ? `${firstSentence}.` : cleaned;
                 })()}
               </p>
+              {/* Score Explainability (Pros / Cons Checklist) */}
+              {scoreExplainability && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 bg-[#131313] p-2.5 rounded-lg border border-[#242424]">
+                  <div>
+                    <div className="text-[8px] text-[#5DCAA5] font-extrabold uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#5DCAA5]" /> green flags
+                    </div>
+                    <ul className="list-none flex flex-col gap-1 font-mono text-[10px]">
+                      {scoreExplainability.pros.map((pro, i) => (
+                        <li key={i} className="text-[#a0a09a] leading-relaxed">
+                          {pro}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="border-t sm:border-t-0 sm:border-l border-[#242424] pt-2 sm:pt-0 sm:pl-3">
+                    <div className="text-[8px] text-[#E24B4A] font-extrabold uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E24B4A]" /> deductions
+                    </div>
+                    <ul className="list-none flex flex-col gap-1 font-mono text-[10px]">
+                      {scoreExplainability.cons.map((con, i) => (
+                        <li key={i} className="text-[#a0a09a] leading-relaxed">
+                          {con}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
               {/* vs bar */}
               <div className="bg-[#1f1f1f] rounded-md px-3 py-[10px]">
                 <div className="text-[9px] text-[#787672] uppercase tracking-[0.1em] mb-[6px]">vs average developer</div>
@@ -135,9 +166,16 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
           {/* Hero centerpiece: Highest Impact Career Blocker Fix */}
           {highestImpactFix && (
             <div className="bg-[#181102] border border-[#d4af37]/30 rounded-[12px] p-5 shadow-[0_0_20px_rgba(212,175,55,0.05)] mb-1">
-              <div className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#EF9F27] mb-3 flex items-center gap-2">
-                <span className="inline-block w-[3.5px] h-[12px] bg-[#EF9F27] rounded-[2px]" />
-                ⚡ HIGH PRIORITY CAREER BLOCKER
+              <div className="flex justify-between items-start gap-2 mb-3">
+                <div className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#EF9F27] flex items-center gap-2 mt-1">
+                  <span className="inline-block w-[3.5px] h-[12px] bg-[#EF9F27] rounded-[2px]" />
+                  ⚡ HIGH PRIORITY CAREER BLOCKER
+                </div>
+                {highestImpactFix.potentialScoreProjection && (
+                  <div className="text-[9px] font-mono text-[#5DCAA5] bg-[#0b261c] border border-[#0F6E56]/30 px-2 py-1 rounded-md uppercase tracking-wider font-extrabold whitespace-nowrap">
+                    📈 Potential Boost: {highestImpactFix.potentialScoreProjection}
+                  </div>
+                )}
               </div>
               <h3 className="text-[17px] font-extrabold text-[#ebebeb] mb-3 font-sans leading-snug">
                 {highestImpactFix.title}
@@ -287,6 +325,79 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
             )}
           </div>
 
+          {/* Collapsible Profile Bios & Badges Toolbox */}
+          {headlines && (
+            <div className="bg-[#101010] border border-[#242424] rounded-[12px] overflow-hidden transition-all">
+              <button
+                onClick={() => setShowToolbox(!showToolbox)}
+                className="w-full flex justify-between items-center px-5 py-4 bg-transparent border-none text-left cursor-pointer hover:bg-[#141414] transition-colors"
+              >
+                <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] flex items-center gap-2">
+                  <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
+                  🛠️ Profile Bios & Badges Toolbox
+                </div>
+                <span className="text-[#787672] font-mono text-[10px]">
+                  {showToolbox ? "Collapse [-]" : "Expand [+]"}
+                </span>
+              </button>
+              
+              {showToolbox && (
+                <div className="p-5 border-t border-[#242424] flex flex-col gap-4 bg-[#141414] font-sans">
+                  <p className="text-[11.5px] text-[#787672] leading-normal mb-1">
+                    Copy these AI-generated custom developer bios and shield badges directly onto your social profiles.
+                  </p>
+
+                  <div className="grid gap-3">
+                    {/* LinkedIn Bio */}
+                    <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
+                      <div className="text-[8px] text-[#a0a09a] font-extrabold uppercase tracking-wider mb-1 font-mono">LinkedIn Tagline</div>
+                      <p className="text-[12px] text-[#ebebeb] pr-12 font-medium">{headlines.linkedin}</p>
+                      <button
+                        onClick={() => handleCopy(headlines.linkedin, "linkedin")}
+                        className="absolute right-3 top-3 px-2 py-1 bg-[#242424] border border-[#2e2e2e] rounded text-[9px] text-[#5DCAA5] hover:border-[#1D9E75] font-mono transition-colors"
+                      >
+                        {copiedKey === "linkedin" ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+
+                    {/* GitHub README Bio */}
+                    <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
+                      <div className="text-[8px] text-[#a0a09a] font-extrabold uppercase tracking-wider mb-1 font-mono">GitHub Profile Bio</div>
+                      <p className="text-[12px] text-[#ebebeb] pr-12 font-medium">{headlines.githubReadme}</p>
+                      <button
+                        onClick={() => handleCopy(headlines.githubReadme, "github")}
+                        className="absolute right-3 top-3 px-2 py-1 bg-[#242424] border border-[#2e2e2e] rounded text-[9px] text-[#5DCAA5] hover:border-[#1D9E75] font-mono transition-colors"
+                      >
+                        {copiedKey === "github" ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+
+                    {/* Custom Shield Badge Markdown */}
+                    <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
+                      <div className="text-[8px] text-[#a0a09a] font-extrabold uppercase tracking-wider mb-2 font-mono">Custom GitHub Shield Badge</div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <img 
+                          src={`https://img.shields.io/badge/Git--XRay-${encodeURIComponent(archetype)}-085041?style=flat-square&logo=github&logoColor=white`}
+                          alt="Git-XRay Archetype Badge"
+                          className="h-[20px]"
+                        />
+                      </div>
+                      <pre className="text-[9.5px] text-[#a0a09a] bg-[#101010] p-2 rounded border border-[#242424] font-mono overflow-x-auto select-all">
+                        {`[![Git-XRay Archetype](https://img.shields.io/badge/Git--XRay-${encodeURIComponent(archetype)}-085041?style=flat-square&logo=github&logoColor=white)](https://github.com/Durgaprasad-Developer/Git-XRay)`}
+                      </pre>
+                      <button
+                        onClick={() => handleCopy(`[![Git-XRay Archetype](https://img.shields.io/badge/Git--XRay-${encodeURIComponent(archetype)}-085041?style=flat-square&logo=github&logoColor=white)](https://github.com/Durgaprasad-Developer/Git-XRay)`, "badge")}
+                        className="absolute right-3 top-3 px-2 py-1 bg-[#242424] border border-[#2e2e2e] rounded text-[9px] text-[#5DCAA5] hover:border-[#1D9E75] font-mono transition-colors"
+                      >
+                        {copiedKey === "badge" ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Share Card (Poster Cards) */}
           <ShareCard data={shareCard} username={profile.username} name={profile.name || profile.username} />
 
@@ -358,23 +469,29 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
           </div>
 
 
-          {/* Tech Stack */}
-          <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
-              Tech Stack Detected
+          {/* Hiring Position Match (Replaces Tech Stack) */}
+          {positionMatch && (
+            <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5 shadow-[0_0_15px_rgba(93,202,165,0.02)] font-sans">
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+                <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
+                🎯 Hiring Position Match
+              </div>
+              <div className="text-[9px] text-[#787672] mb-2 uppercase tracking-[0.08em] font-mono">Best Suited Roles</div>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {positionMatch.bestSuitedRoles.map((role, i) => (
+                  <span key={i} className="text-[10.5px] font-mono px-2.5 py-1 rounded bg-[#082a21] text-[#5DCAA5] border border-[#0F6E56]/40 font-bold">
+                    🛡️ {role}
+                  </span>
+                ))}
+              </div>
+              <div className="bg-[#181818] border border-[#242424] rounded-lg p-3">
+                <div className="text-[9px] text-[#a0a09a] font-extrabold tracking-wider uppercase mb-1 font-mono">💼 Recruiter Appeal Factor</div>
+                <p className="text-[11.5px] text-[#ebebeb] leading-relaxed italic whitespace-pre-line">
+                  "{positionMatch.recruiterAppealFactor}"
+                </p>
+              </div>
             </div>
-            <div className="text-[9px] text-[#787672] mb-[3px] uppercase tracking-[0.08em]">Primary identity</div>
-            <div className="text-[13px] font-bold text-[#ebebeb] mb-2">{techStack.primaryIdentity}</div>
-            <div className="flex flex-wrap gap-[5px]">
-              {techStack.primary.map((t, i) => (
-                <span key={`primary-${t}-${i}`} className="text-[10px] px-[9px] py-1 rounded border bg-[#085041] text-[#5DCAA5] border-[#0F6E56]">{t}</span>
-              ))}
-              {techStack.secondary.map((t, i) => (
-                <span key={`secondary-${t}-${i}`} className="text-[10px] px-[9px] py-1 rounded border border-[#2e2e2e] text-[#787672]">{t}</span>
-              ))}
-            </div>
-          </div>
+          )}
 
         </div>
 

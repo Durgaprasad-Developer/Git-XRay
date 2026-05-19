@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { DeveloperSignals } from "@/types/signals.types";
-import { ScoreData, RecruiterImpression, ReviewData, HighestImpactFixData } from "@/types/report.types";
+import { ScoreData, RecruiterImpression, ReviewData, HighestImpactFixData, ScoreExplainabilityData, HiringPositionMatchData, HeadlineData } from "@/types/report.types";
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
@@ -33,6 +33,9 @@ export class GeminiService {
     recruiterImpression: RecruiterImpression[];
     improvements: string[];
     highestImpactFix?: HighestImpactFixData;
+    scoreExplainability?: ScoreExplainabilityData;
+    positionMatch?: HiringPositionMatchData;
+    headlines?: HeadlineData;
   }> {
     console.log("[AI Engine] Generating recruiter review for:", username);
 
@@ -85,18 +88,42 @@ Expected JSON Schema:
     { "sentiment": "positive", "text": "Verdict: <strong style='color:#5DCAA5'>Pass to screening / internship offer / junior / mid.</strong>", "isVerdict": true }
   ],
   "improvements": [
-    "Specific high-impact actionable recommendation 1 (e.g. deploy project X, improve readme of Y, etc.)",
-    "Specific high-impact actionable recommendation 2",
-    "Specific high-impact actionable recommendation 3",
-    "Specific high-impact actionable recommendation 4",
-    "Specific high-impact actionable recommendation 5"
+    "A hyper-personalized, repo-specific high-impact recommendation targeting an exact repository name (e.g. 'Your repository \"Sortiq\" lacks setup instructions and architecture explanation. Adding these could improve recruiter confidence significantly.'). Do NOT provide generic list items like 'Add README files'. All improvements MUST mention specific repo names and specific tasks.",
+    "A second personalized repo-specific actionable item mentioning another candidate repository name",
+    "A third personalized repo-specific actionable item mentioning another candidate repository name",
+    "A fourth personalized actionable item (e.g., 'Host a live demo on Vercel for repository \"AIDK\" to prove recruiter viability.')",
+    "A fifth personalized actionable item targeting specific documentation or structural fixes"
   ],
   "highestImpactFix": {
     "title": "A highly-attention grabbing title for the highest impact blocker fix (e.g. 'Deploy Your Core MVP' or 'Standardize Repository Documentation')",
     "diagnosis": "A concise explanation of the single most limiting issue in their developer profile footprint.",
     "whyItMatters": "Why this single issue damages recruiter screening rates (e.g., 'Recruiters reject candidates with zero live links in less than 6 seconds.').",
     "exactFix": "Explicit, actionable step-by-step developer guide to solve this exact issue (e.g., '1. Go to Vercel/Netlify. 2. Link repository X. 3. Insert live URL inside your GitHub project description field.').",
-    "expectedImpact": "Explain the clear outcome, detailing the recruiter confidence multiplier if this fix is implemented."
+    "expectedImpact": "Explain the clear outcome, detailing the recruiter confidence multiplier if this fix is implemented.",
+    "potentialScoreProjection": "A highly motivating score projection detailing estimated score improvement, e.g. '+15 to +20 points (Overall: 57 -> 77)' if they fix this single blocker."
+  },
+  "scoreExplainability": {
+    "pros": [
+      "+ A clear positive green-flag highlight about their profile, e.g. '+ Strong JavaScript activity'",
+      "+ Another green-flag highlight, e.g. '+ Multiple active repos'"
+    ],
+    "cons": [
+      "- A clear negative flag highlight explaining score deduction, e.g. '- Weak deployment proof'",
+      "- Another negative flag highlight, e.g. '- Limited README depth'"
+    ]
+  },
+  "positionMatch": {
+    "bestSuitedRoles": [
+      "Role 1 (e.g. 'Full Stack Intern')",
+      "Role 2 (e.g. 'MVP Prototype Builder')",
+      "Role 3 (e.g. 'AI Hackathon Specialist')"
+    ],
+    "recruiterAppealFactor": "A one-sentence explanation of what makes this candidate appealing for those roles, e.g. 'Highly suited for fast-paced agile product delivery and rapid MVP iteration.'"
+  },
+  "headlines": {
+    "linkedin": "A high-impact tag line tailored for LinkedIn based on their tech specialty (approx 10-15 words). Include their top languages and competency tier (e.g., 'JavaScript & Go Developer | specialized in production deployability & clean code architecture'). Do not include names.",
+    "githubReadme": "A clean markdown bio snippet optimized to embed in their GitHub profile README.md (approx 30-50 words). Include a dynamic shields.io badge referencing their rank tier and a signature green accent. Highlight their top language and consistency score.",
+    "twitter": "A sharp, high-vibe bio for Twitter/X (max 160 characters). Emphasize their top building focus."
   }
 }
 
@@ -116,6 +143,9 @@ Ensure all lists and impressions directly reference the candidate's technologies
         recruiterImpression: data.recruiterImpression,
         improvements: data.improvements,
         highestImpactFix: data.highestImpactFix,
+        scoreExplainability: data.scoreExplainability,
+        positionMatch: data.positionMatch,
+        headlines: data.headlines,
       };
     } catch (error) {
       console.error("[AI Engine Error] Failed to generate AI review:", error);
@@ -178,8 +208,8 @@ Ensure all lists and impressions directly reference the candidate's technologies
           { sentiment: "positive", text: "Verdict: <strong>Screen in for entry-level evaluation.</strong>", isVerdict: true },
         ],
         improvements: [
-          `Add README files to your top repositories like ${topRepos[0]?.name || "your main projects"}`,
-          "Host a live demo on Vercel or Netlify to prove your code works",
+          `Your repository "${topRepos[0]?.name || "Sortiq"}" lacks setup instructions and architecture explanation. Adding these could improve recruiter confidence significantly.`,
+          `Your repository "${topRepos[1]?.name || "AIDK"}" lacks a hosted live demo. Link a live URL inside description.`,
           "Pin your highest-quality original repositories to clear up clutter",
           "Add structured setup and installation instructions to your documentation",
         ],
@@ -188,7 +218,32 @@ Ensure all lists and impressions directly reference the candidate's technologies
           diagnosis: `Your repositories lack visible, active deployment links despite having consistent building blocks in ${signals.topLanguage || "Web Stack"}.`,
           whyItMatters: "Recruiters and hiring managers spend an average of 15 seconds on a profile. Without clickable live links, they assume the project is a dead mock skeleton.",
           exactFix: `1. Import your top repository ${topRepos[0]?.name || "your primary project"} into Vercel, Netlify, or Github Pages.\n2. Verify the production build compiles correctly.\n3. Add the live URL directly inside your repository description and README.`,
-          expectedImpact: "HIGH. Dramatically increases recruiter review duration and guarantees passing initial code validation screens."
+          expectedImpact: "HIGH. Dramatically increases recruiter review duration and guarantees passing initial code validation screens.",
+          potentialScoreProjection: `+15 to +20 points (Overall: ${scores.overall} → ${Math.min(99, scores.overall + 18)})`
+        },
+        scoreExplainability: {
+          pros: [
+            `+ Active GitHub developer for ${signals.accountAge} years`,
+            `+ High primary language density in ${signals.topLanguage}`,
+            `+ Found ${signals.activeRepos} recently active repositories`
+          ],
+          cons: [
+            `- ${signals.inactiveRepos} repositories currently have no active commits`,
+            "- Low overall project live deployment links"
+          ]
+        },
+        positionMatch: {
+          bestSuitedRoles: [
+            `${signals.topLanguage || "Full Stack"} Developer`,
+            "Agile MVP Builder",
+            "General Software Engineer"
+          ],
+          recruiterAppealFactor: `Displays strong practical building velocity in ${signals.topLanguage} suitable for fast execution.`
+        },
+        headlines: {
+          linkedin: `${signals.primaryTechIdentity || "Full Stack Developer"} | Specialized in ${signals.topLanguage || "Web Technologies"} & Clean Code Architectures`,
+          githubReadme: `### Hi there! 👋\n\n[![Git-XRay Competency](https://img.shields.io/badge/Git--XRay-Developer-1D9E75?style=for-the-badge)](https://github.com/Durgaprasad-Developer/Git-XRay)\n\n* **Primary Stack:** ${signals.topLanguage || "JavaScript"}\n* **Code Stewardship:** Scanned & Verified by Git-XRay`,
+          twitter: `${signals.topLanguage || "Software"} developer and clean code architect. Rating verified at ${scores.overall}% on Git-XRay.`
         }
       };
     }

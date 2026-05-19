@@ -8,7 +8,7 @@ import { AnalysisReport, RepositorySummary } from "@/types/report.types";
 
 export async function POST(req: NextRequest) {
   try {
-    const { username } = await req.json();
+    const { username, force } = await req.json();
 
     if (!username || typeof username !== "string") {
       return NextResponse.json({ error: "Username is required" }, { status: 400 });
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     console.log(`[API Analyze] Beginning full analysis pipeline for: ${cleanUsername}`);
 
     // Check cache first
-    const cachedReport = await CacheService.getCachedReport(cleanUsername);
+    const cachedReport = force ? null : await CacheService.getCachedReport(cleanUsername);
     if (cachedReport) {
       console.log(`[API Analyze] Cache HIT for: ${cleanUsername}. Returning cached report.`);
       return NextResponse.json(cachedReport);
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     // 4. AI Review Engine
     console.log("[API Analyze] 4/4 - Invoking Gemini Recruiter Engine");
-    const { review, recruiterImpression, improvements, highestImpactFix } = await GeminiService.generateReview(
+    const { review, recruiterImpression, improvements, highestImpactFix, scoreExplainability, positionMatch, headlines } = await GeminiService.generateReview(
       cleanUsername,
       signals,
       scores,
@@ -136,6 +136,9 @@ export async function POST(req: NextRequest) {
         openSourceScore: scores.openSource,
       },
       highestImpactFix,
+      scoreExplainability,
+      positionMatch,
+      headlines,
     };
 
     // Cache the completed report for future fast lookups

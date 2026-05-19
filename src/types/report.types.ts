@@ -11,6 +11,8 @@ export interface AnalysisReport {
   shareCard: ShareCardData;
   headlines?: HeadlineData;
   highestImpactFix?: HighestImpactFixData;
+  scoreExplainability?: ScoreExplainabilityData;
+  positionMatch?: HiringPositionMatchData;
 }
 
 export interface HighestImpactFixData {
@@ -19,6 +21,17 @@ export interface HighestImpactFixData {
   whyItMatters: string;
   exactFix: string;
   expectedImpact: string;
+  potentialScoreProjection?: string;
+}
+
+export interface ScoreExplainabilityData {
+  pros: string[];
+  cons: string[];
+}
+
+export interface HiringPositionMatchData {
+  bestSuitedRoles: string[];
+  recruiterAppealFactor: string;
 }
 
 export interface HeadlineData {
