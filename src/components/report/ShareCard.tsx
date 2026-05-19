@@ -25,13 +25,13 @@ interface ProfileThemeData {
 }
 
 interface CardCustomizations {
-  accentColor: string;       // Google blue, neural violet, systems rust, etc.
+  accentColor: string;       // X-Ray neon green, neural violet, systems rust, etc.
   secondaryColor: string;    // complimentary vector accent
-  vibeTitle: string;         // e.g. "BUILD WITH AI", "BUILD OPEN SOURCE"
+  vibeTitle: string;         // e.g. "Neural X-Rayed", "OSS Footprint"
   stickerText: string;       // laptop sticker tag
   bracketsColor: string;     // vector brackets outline color
-  arrowColor: string;        // direction arrow color
-  bracketLabel: string;      // geeky string like "model: gemini"
+  arrowColor: string;        // vector arrow color
+  bracketLabel: string;      // geeky string like "diagnostics: 'neural_net'"
   starColor: string;         // sparkle ornament color
 }
 
@@ -63,64 +63,64 @@ function getDeveloperStatsBadges(data: ShareCardData): string[] {
 
 /**
  * Dynamic aesthetic customizations engine based on their tag / archetype.
- * Maps exact colors, labels, stickers, and shapes to the Google Developer vector style.
+ * Maps exact colors, labels, stickers, and shapes to the GitHub X-Ray zine style.
  */
-function getGoogleDevCustomizations(archetype: string, techIdentity: string, score: number): CardCustomizations {
+function getXRayDevCustomizations(archetype: string, techIdentity: string, score: number): CardCustomizations {
   const arch = archetype || "";
   const archLower = arch.toLowerCase();
 
   // 1. AI / ML Guy (🤖)
   if (archLower.includes("ai") || archLower.includes("ml") || archLower.includes("machine") || archLower.includes("learning")) {
     return {
-      accentColor: "#1a73e8", // Google Blue
-      secondaryColor: "#a855f7", // AI Violet
-      vibeTitle: "Build with AI",
-      stickerText: "AI EXPLORER",
-      bracketsColor: "#f9ab00", // Google Yellow
+      accentColor: "#a855f7", // Neural Violet
+      secondaryColor: "#1a73e8", // Cyber Blue
+      vibeTitle: "Neural X-Rayed",
+      stickerText: "AI RECON",
+      bracketsColor: "#5DCAA5", // Signature X-Ray Green
       arrowColor: "#1e8e3e", // Google Green
-      bracketLabel: `model: "gemini-2.5"`,
-      starColor: "#4285f4",
+      bracketLabel: `diagnostics: "neural_net"`,
+      starColor: "#a855f7",
     };
   }
 
   // 2. Open Source Explorer (🌐)
   if (archLower.includes("open source") || archLower.includes("oss") || archLower.includes("explorer")) {
     return {
-      accentColor: "#1e8e3e", // Google Green
-      secondaryColor: "#1a73e8", // Google Blue
-      vibeTitle: "Build Open Source",
-      stickerText: "OSS CONTRIB",
-      bracketsColor: "#f9ab00", // Google Yellow
-      arrowColor: "#d93025", // Google Red
-      bracketLabel: `git: "push --force"`,
-      starColor: "#34a853",
+      accentColor: "#1e8e3e", // Dev Green
+      secondaryColor: "#5DCAA5", // Signature X-Ray Green
+      vibeTitle: "OSS Footprint",
+      stickerText: "OSS COLLAB",
+      bracketsColor: "#1a73e8", // Cyber Blue
+      arrowColor: "#d93025", // Cyber Red
+      bracketLabel: `diagnostics: "oss_mesh"`,
+      starColor: "#5DCAA5",
     };
   }
 
   // 3. Hackathon Builder (⚡)
   if (archLower.includes("hackathon") || archLower.includes("builder")) {
     return {
-      accentColor: "#f9ab00", // Google Yellow
-      secondaryColor: "#ea4335", // Google Red
-      vibeTitle: "Build at Speed",
-      stickerText: "HACK BEAST",
-      bracketsColor: "#1a73e8", // Google Blue
-      arrowColor: "#1e8e3e", // Google Green
-      bracketLabel: `mode: "rapid_prototype"`,
-      starColor: "#facc15",
+      accentColor: "#f9ab00", // Volt Yellow
+      secondaryColor: "#ea4335", // Cyber Red
+      vibeTitle: "Voltage Builder",
+      stickerText: "SPEED RUN",
+      bracketsColor: "#5DCAA5", // Signature X-Ray Green
+      arrowColor: "#1a73e8", // Cyber Blue
+      bracketLabel: `diagnostics: "speed_run"`,
+      starColor: "#fbbf24",
     };
   }
 
   // 4. Frontend Craftsman (🎨)
   if (archLower.includes("frontend") || archLower.includes("craftsman")) {
     return {
-      accentColor: "#1a73e8", // Google Blue
-      secondaryColor: "#ff00a0", // Coral Magenta
-      vibeTitle: "Pixel Perfect",
-      stickerText: "UI CRAFTSMAN",
-      bracketsColor: "#1e8e3e", // Google Green
-      arrowColor: "#f9ab00", // Google Yellow
-      bracketLabel: `css: "pixel_perfect"`,
+      accentColor: "#1a73e8", // Cyber Blue
+      secondaryColor: "#ff00a0", // Coral Pink
+      vibeTitle: "Pixel Crafted",
+      stickerText: "UI SPECIMEN",
+      bracketsColor: "#5DCAA5", // Signature X-Ray Green
+      arrowColor: "#f9ab00", // Volt Yellow
+      bracketLabel: `diagnostics: "ui_specimen"`,
       starColor: "#06b6d4",
     };
   }
@@ -128,34 +128,34 @@ function getGoogleDevCustomizations(archetype: string, techIdentity: string, sco
   // 5. Systems / Backend Specialist (⚙️ / 🧱)
   if (archLower.includes("systems") || archLower.includes("backend") || archLower.includes("architect")) {
     return {
-      accentColor: "#d93025", // Google Red
-      secondaryColor: "#f9ab00", // Google Yellow
-      vibeTitle: "Systems Active",
+      accentColor: "#d93025", // Console Crimson
+      secondaryColor: "#f9ab00", // Volt Yellow
+      vibeTitle: "Console Core",
       stickerText: "SYS MONOLITH",
-      bracketsColor: "#1a73e8", // Google Blue
-      arrowColor: "#1e8e3e", // Google Green
-      bracketLabel: `alloc: "optimized"`,
+      bracketsColor: "#5DCAA5", // Signature X-Ray Green
+      arrowColor: "#1e8e3e", // Dev Green
+      bracketLabel: `diagnostics: "sys_core"`,
       starColor: "#ea4335",
     };
   }
 
   // 6. Default / Full Stack (🏆)
   return {
-    accentColor: "#1a73e8", // Google Blue
-    secondaryColor: "#1e8e3e", // Google Green
-    vibeTitle: "Build the Stack",
+    accentColor: "#5DCAA5", // Signature X-Ray Green
+    secondaryColor: "#1a73e8", // Cyber Blue
+    vibeTitle: "Full Flow Active",
     stickerText: "FULL STACK",
-    bracketsColor: "#f9ab00", // Google Yellow
-    arrowColor: "#ea4335", // Google Red
-    bracketLabel: `engine: "verified"`,
-    starColor: "#f9ab00",
+    bracketsColor: "#f9ab00", // Volt Yellow
+    arrowColor: "#ea4335", // Cyber Red
+    bracketLabel: `diagnostics: "full_stack"`,
+    starColor: "#5DCAA5",
   };
 }
 
 /* ═══════════════════════════════════════════════════════
-   PREMIUM GOOGLE DEVELOPER PLAYFUL TICKET BADGE
+   PREMIUM GITHUB X-RAY PLAYFUL TICKET BADGE
 ═══════════════════════════════════════════════════════ */
-function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
+function XRayDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
   const barColor = (val: number) => {
     if (val >= 75) return "#1e8e3e"; // Google green
     if (val >= 50) return "#1a73e8"; // Google blue
@@ -223,7 +223,7 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             </span>
           </div>
 
-          {/* Big heavy Google-Style graphic heading */}
+          {/* Big heavy GitHub X-Ray graphic heading */}
           <div style={{ position: "relative" }}>
             <div style={{
               fontSize: 48, fontWeight: 900, color: "#1a1a1a",
@@ -325,7 +325,7 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             boxShadow: "2px 2px 0px #1a1a1a",
             display: "flex", alignItems: "center", gap: 6,
           }}>
-            <span>STATS</span>
+            <span>X-RAY RECON</span>
             <span style={{ fontSize: 13, lineHeight: 1 }}>➔</span>
           </div>
 
@@ -334,9 +334,9 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             border: "2px dashed #1a1a1a",
             borderRadius: "50%",
             width: 32, height: 32,
-            display: "flex", alignItems: "center",
+            display: "flex", alignItems: "center", justifyContent: "center",
             transform: "rotate(15deg)",
-          }} className="justify-center">
+          }}>
             <span style={{ fontSize: 14, color: "#1a1a1a88", fontWeight: "bold" }}>✳</span>
           </div>
         </div>
@@ -360,9 +360,9 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
         background: "#ffffff", // clean pure white backing
       }}>
         
-        {/* Giant Playful Vector Overall Score Stamp */}
+        {/* Giant Playful Vector X-Ray Score Stamp */}
         <div style={{
-          background: "#f9ab00", // bright google yellow
+          background: "#f9ab00", // bright yellow
           border: "4px solid #1a1a1a",
           borderRadius: "20px",
           padding: "20px",
@@ -375,9 +375,9 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             position: "absolute", left: -12, top: -14,
             width: 24, height: 24, borderRadius: "50%",
             background: "#ea4335", border: "2px solid #1a1a1a",
-            display: "flex", alignItems: "center",
+            display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 10, color: "#ffffff", fontWeight: 900,
-          }} className="justify-center">
+          }}>
             {`{`}
           </div>
 
@@ -385,7 +385,7 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             {p.score}
           </div>
           <div style={{ fontSize: 11, fontWeight: 900, color: "#1a1a1a", letterSpacing: 2, marginTop: 4 }}>
-            DEVELOPER SCORE
+            X-RAY SCORE
           </div>
           <div style={{ fontSize: 9, fontWeight: 700, color: "#1a1a1a88", letterSpacing: 0.5, marginTop: 2 }}>
             {p.rank} GLOBAL
@@ -425,13 +425,13 @@ function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
           ))}
         </div>
 
-        {/* Google for Developers Inspired branding tag */}
+        {/* GitHub X-Ray branding tag */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#1a1a1a", letterSpacing: 1.5 }}>
-            GOOGLE FOR DEVS
+            GITHUB X-RAY
           </div>
           <div style={{ fontSize: 9, fontWeight: 800, color: "#1a1a1a44", fontFamily: "monospace" }}>
-            BADGE_NO_{p.year}
+            RECON_NO_{p.year}
           </div>
         </div>
       </div>
@@ -461,7 +461,7 @@ export default function ShareCard({ data, username, name }: ShareCardProps) {
   };
 
   // Obtain brand customizations dynamically based on tag/archetype
-  const customizations = getGoogleDevCustomizations(data.archetype, data.techIdentity, data.score);
+  const customizations = getXRayDevCustomizations(data.archetype, data.techIdentity, data.score);
 
   // Prepare highly descriptive recruiter-ready social post copy
   const shareText = `🚀 Just got my GitHub footprint X-rayed! 🔎
@@ -568,7 +568,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
           ◉ DEV STATUS CARD
         </div>
         <h3 className="text-[17px] font-extrabold text-[#ebebeb] tracking-tight">
-          Personalized Google Developer Badge
+          Personalized GitHub X-Ray Badge
         </h3>
         <p className="text-[12px] text-[#787672] mt-1">
           A completely custom, visual developer spec ticket dynamically optimized for your GitHub stack and stats footprint. Screenshot and share your status!
@@ -578,7 +578,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       {/* High-Resolution Poster Card Preview */}
       <div className="w-full overflow-x-auto overflow-y-hidden rounded-xl border border-[#242424] bg-[#050505] mb-5 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-950 flex justify-start items-center p-1">
         <div style={{ width: 900, height: 500, flexShrink: 0 }} className="mx-auto select-none">
-          <GoogleDevCard p={profileData} c={customizations} />
+          <XRayDevCard p={profileData} c={customizations} />
         </div>
       </div>
 
@@ -586,7 +586,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       <div className="bg-[#181818] border border-[#242424] rounded-lg p-[14px] flex items-start gap-3 mb-6">
         <span className="text-[14px] leading-none select-none">🎯</span>
         <div className="text-[11.5px] leading-relaxed text-[#b8b8b0]">
-          <strong className="text-[#ebebeb]">Google-Style {customizations.stickerText} Theme Applied:</strong> We detected your primary identity tags and dynamically calibrated these vector stars, stickers, and color presets to fit your developer brand perfectly. <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post!
+          <strong className="text-[#ebebeb]">GitHub X-Ray {customizations.stickerText} Theme Applied:</strong> We detected your primary identity tags and dynamically calibrated these vector stars, stickers, and color presets to fit your developer brand perfectly. <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post!
         </div>
       </div>
 
