@@ -75,7 +75,7 @@ Expected JSON Schema:
   "review": {
     "standard": "An honest, constructive, recruiter-style review (approx 80-120 words). Highlight their building patterns, what they do well, and where their profile lacks polish (e.g. documentation, deployment, or forks). Use <strong> tags on key insights.",
     "brutal": "A funny, sharp, slightly sarcastic but highly accurate roast of their profile (approx 80-120 words). Call out half-baked repos, empty contribution periods, missing READMEs, or tutorial copies. Keep it lighthearted but deeply insightful.",
-    "recruiter": "A raw, behind-the-scenes recruiter screening lens (approx 80-120 words). Write this as if you are leaving feedback for a hiring manager. What tier candidate is this? Are they junior, mid, or senior? What is the verdict?"
+    "recruiter": "A raw, highly structured behind-the-scenes technical recruiter dossier scorecard formatted in premium styled HTML. It MUST strictly follow this exact template and populate candidate specific data:\n<div class=\"border border-[#242424] bg-[#141414] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4\">\n  <strong>📋 CANDIDATE REPORT DOSSIER</strong>\n  <div class=\"h-px bg-[#242424] my-2\"></div>\n  <strong>💼 HIRING VERDICT:</strong> <span class=\"text-[#5DCAA5] font-extrabold\">[STRONG PASS / PASS TO SCREEN / ARCHIVE based on Overall Score]</span><br/>\n  <strong>📊 COMPETENCY TIER:</strong> <span class=\"text-[#EF9F27] font-extrabold\">[SENIOR DEVELOPER / MID-LEVEL / JUNIOR / INTERN based on scores]</span><br/>\n  <strong>⚡ MARKET VALUE INDEX:</strong> [e.g. High Go/Rust Utility, Rising React Generalist, etc.]\n</div>\n\n<div class=\"grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans\">\n  <div class=\"bg-[#082a21] border border-[#0F6E56] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-1\">🟢 STRENGTHS (GREEN FLAGS)</div>\n    <span class=\"text-[11px] text-[#b8b8b0] leading-normal\">- [Highlight 1 e.g. High documentation stewardship]<br/>- [Highlight 2 e.g. production-ready deployments]</span>\n  </div>\n  <div class=\"bg-[#2a0808] border border-[#560f0f] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#E24B4A] font-extrabold tracking-wider uppercase mb-1\">🔴 LIABILITIES (RED FLAGS)</div>\n    <span class=\"text-[11px] text-[#b8b8b0] leading-normal\">- [Highlight 1 e.g. empty contribution periods]<br/>- [Highlight 2 e.g. tutorial-copied templates]</span>\n  </div>\n</div>\n\n<p class=\"text-[12.5px] text-[#b8b8b0] leading-relaxed pl-3 border-l-2 border-[#1D9E75] font-sans\">\n  [A highly customized Silicon Valley recruiter's executive summary evaluating the candidate's actual projects, code stewardship, active vs stale repos, and language density. Keep this commentary deeply analytical, specific to their repo names, and realistic (approx 60-90 words)]\n</p>"
   },
   "recruiterImpression": [
     { "sentiment": "positive", "text": "First 15-second visual impression positive signal." },
@@ -115,7 +115,30 @@ Ensure all lists and impressions directly reference the candidate's technologies
         review: {
           standard: `You clearly love building with <strong>${signals.topLanguage}</strong>. Your account age shows you have been active for <strong>${signals.accountAge} years</strong>. However, your profile could benefit from higher deployment rates and structured documentation.`,
           brutal: `A profile active for ${signals.accountAge} years and the main highlight is still a repository with no deployment? Let's get to work and deploy those projects instead of leaving them as graveyards.`,
-          recruiter: `Candidate has decent exposure to ${signals.topLanguage}. Lacks open source collaboration presence. Standard review complete.`,
+          recruiter: `
+<div class="border border-[#242424] bg-[#141414] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4">
+  <strong>📋 CANDIDATE REPORT DOSSIER</strong>
+  <div class="h-px bg-[#242424] my-2"></div>
+  <strong>💼 HIRING VERDICT:</strong> <span class="text-[#5DCAA5] font-extrabold">PASS TO SCREEN</span><br/>
+  <strong>📊 COMPETENCY TIER:</strong> <span class="text-[#EF9F27] font-extrabold">MID-LEVEL BUILDER</span><br/>
+  <strong>⚡ MARKET VALUE INDEX:</strong> High ${signals.topLanguage || "Full Stack"} Stack Parity
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans">
+  <div class="bg-[#082a21] border border-[#0F6E56] rounded-lg p-3">
+    <div class="text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-1">🟢 STRENGTHS (GREEN FLAGS)</div>
+    <span class="text-[11px] text-[#b8b8b0] leading-normal">- Consistent footprint in ${signals.topLanguage || "primary stack"}<br/>- High active building index</span>
+  </div>
+  <div class="bg-[#2a0808] border border-[#560f0f] rounded-lg p-3">
+    <div class="text-[9px] text-[#E24B4A] font-extrabold tracking-wider uppercase mb-1">🔴 LIABILITIES (RED FLAGS)</div>
+    <span class="text-[11px] text-[#b8b8b0] leading-normal">- Documentation could be deeper<br/>- Limited open source contributions</span>
+  </div>
+</div>
+
+<p class="text-[12.5px] text-[#b8b8b0] leading-relaxed pl-3 border-l-2 border-[#1D9E75] font-sans">
+  Candidate displays a <strong>solid architectural foundation</strong> in <strong>${signals.topLanguage || "their primary language"}</strong> across <strong>${signals.accountAge} years</strong>. The profile shows strong MVP building velocity but could improve direct production deployability coverage to stand out to senior hiring committees.
+</p>
+          `.trim(),
         },
         recruiterImpression: [
           { sentiment: "positive", text: `Demonstrates basic consistency in ${signals.topLanguage}.` },
