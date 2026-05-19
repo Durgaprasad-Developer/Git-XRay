@@ -153,8 +153,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
             </div>
 
             <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-              <div className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#787672] mb-4 flex items-center gap-2">
-                <span className="inline-block w-[3px] h-[11px] bg-[#1D9E75] rounded-[2px]" />
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+                <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
                 {reviewContent[reviewMode].title}
               </div>
               <p
@@ -166,8 +166,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
 
           {/* Top Projects */}
           <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#787672] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3px] h-[11px] bg-[#1D9E75] rounded-[2px]" />
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
               Top Projects Analyzed
             </div>
             <div className="flex flex-col gap-2">
@@ -240,8 +240,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
 
           {/* Recruiter Impression */}
           <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#787672] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3px] h-[11px] bg-[#1D9E75] rounded-[2px]" />
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
               Recruiter Impression · First 15 Seconds
             </div>
             <div className="flex flex-col gap-[6px]">
@@ -277,8 +277,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
 
           {/* Improvements */}
           <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#787672] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3px] h-[11px] bg-[#1D9E75] rounded-[2px]" />
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
               Top Improvements · Highest Impact First
             </div>
             <ul className="flex flex-col gap-[6px] list-none">
@@ -295,8 +295,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
 
           {/* Tech Stack */}
           <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#787672] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3px] h-[11px] bg-[#1D9E75] rounded-[2px]" />
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
               Tech Stack Detected
             </div>
             <div className="text-[9px] text-[#787672] mb-[3px] uppercase tracking-[0.08em]">Primary identity</div>
