@@ -25,11 +25,14 @@ interface ProfileThemeData {
 }
 
 interface CardCustomizations {
-  accentColor: string;      // main highlight color (neon violet, prismatic teal, amber, etc.)
-  bgColor: string;          // matching theme background
-  themeTag: string;         // formatted vibe label with emoji
-  gradientBloom: string;    // dynamic mesh glow for Cyber-Glow ticket
-  cyberAccent: string;      // secondary complementary neon color
+  accentColor: string;       // Google blue, neural violet, systems rust, etc.
+  secondaryColor: string;    // complimentary vector accent
+  vibeTitle: string;         // e.g. "BUILD WITH AI", "BUILD OPEN SOURCE"
+  stickerText: string;       // laptop sticker tag
+  bracketsColor: string;     // vector brackets outline color
+  arrowColor: string;        // direction arrow color
+  bracketLabel: string;      // geeky string like "model: gemini"
+  starColor: string;         // sparkle ornament color
 }
 
 /**
@@ -38,531 +41,398 @@ interface CardCustomizations {
 function getDeveloperStatsBadges(data: ShareCardData): string[] {
   const badges: string[] = [];
   
-  // 1. Archetype (e.g. "🤖 AI / ML Explorer", "🌐 Open Source Explorer")
+  // 1. Core Archetype (e.g. "AI / ML Explorer")
   badges.push(data.archetype);
 
-  // 2. Tech Stack Identity (e.g. "💻 JavaScript Specialist")
+  // 2. Tech Stack Identity
   if (data.techIdentity) {
-    badges.push(`💻 ${data.techIdentity}`);
+    badges.push(data.techIdentity);
   }
 
-  // 3. Dynamic Merit Tag based on actual statistics
+  // 3. Overall capability metric tag
   if (data.score >= 80) {
-    badges.push("🏆 ELITE CODER");
+    badges.push("ELITE BUILDER");
   } else if (data.score >= 60) {
-    badges.push("✨ PRO LEVEL");
+    badges.push("HIGH CALIBER");
   } else {
-    badges.push("⚡ BUILDER CORE");
+    badges.push("DEV CORE");
   }
 
-  if (data.consistencyScore >= 75) {
-    badges.push("🔥 COMMIT BEAST");
-  } else if (data.openSourceScore >= 60) {
-    badges.push("🤝 OSS CONTRIBUTOR");
-  } else if (data.profileScore >= 70) {
-    badges.push("🎨 BRAND MASTER");
-  }
-
-  return badges.slice(0, 3); // Fit beautifully on card rows!
+  return badges.slice(0, 3);
 }
 
 /**
- * Dynamic brand customization engine based on developer's archetype and vibing stats.
+ * Dynamic aesthetic customizations engine based on their tag / archetype.
+ * Maps exact colors, labels, stickers, and shapes to the Google Developer vector style.
  */
-function getDynamicCustomizations(archetype: string, techIdentity: string): CardCustomizations {
+function getGoogleDevCustomizations(archetype: string, techIdentity: string, score: number): CardCustomizations {
   const arch = archetype || "";
-  const tech = techIdentity || "";
   const archLower = arch.toLowerCase();
-  const techLower = tech.toLowerCase();
 
-  // 1. AI / ML Explorer (🤖)
+  // 1. AI / ML Guy (🤖)
   if (archLower.includes("ai") || archLower.includes("ml") || archLower.includes("machine") || archLower.includes("learning")) {
     return {
-      accentColor: "#a855f7", // neural violet
-      bgColor: "#090312",
-      themeTag: "🤖 AI / ML VIBE",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(192,38,211,0.15) 0%, transparent 60%)",
-      cyberAccent: "#e879f9",
+      accentColor: "#1a73e8", // Google Blue
+      secondaryColor: "#a855f7", // AI Violet
+      vibeTitle: "Build with AI",
+      stickerText: "AI EXPLORER",
+      bracketsColor: "#f9ab00", // Google Yellow
+      arrowColor: "#1e8e3e", // Google Green
+      bracketLabel: `model: "gemini-2.5"`,
+      starColor: "#4285f4",
     };
   }
 
-  // 2. Open Source Explorer (🌐) - Prismatic Rainbow Theme
+  // 2. Open Source Explorer (🌐)
   if (archLower.includes("open source") || archLower.includes("oss") || archLower.includes("explorer")) {
     return {
-      accentColor: "#00e5ff", // prismatic cyan
-      bgColor: "#040b14",
-      themeTag: "🌐 OSS GLOBAL VIBE",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(0,229,255,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(255,0,160,0.18) 0%, transparent 60%)",
-      cyberAccent: "#ff00a0",
+      accentColor: "#1e8e3e", // Google Green
+      secondaryColor: "#1a73e8", // Google Blue
+      vibeTitle: "Build Open Source",
+      stickerText: "OSS CONTRIB",
+      bracketsColor: "#f9ab00", // Google Yellow
+      arrowColor: "#d93025", // Google Red
+      bracketLabel: `git: "push --force"`,
+      starColor: "#34a853",
     };
   }
 
-  // 3. Hackathon Builder (⚡) - Volt Cyber Theme
+  // 3. Hackathon Builder (⚡)
   if (archLower.includes("hackathon") || archLower.includes("builder")) {
     return {
-      accentColor: "#facc15", // volt amber
-      bgColor: "#0f0d02",
-      themeTag: "⚡ VOLT CYBER VIBE",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(250,204,21,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(239,68,68,0.15) 0%, transparent 60%)",
-      cyberAccent: "#ef4444",
+      accentColor: "#f9ab00", // Google Yellow
+      secondaryColor: "#ea4335", // Google Red
+      vibeTitle: "Build at Speed",
+      stickerText: "HACK BEAST",
+      bracketsColor: "#1a73e8", // Google Blue
+      arrowColor: "#1e8e3e", // Google Green
+      bracketLabel: `mode: "rapid_prototype"`,
+      starColor: "#facc15",
     };
   }
 
-  // 4. Frontend Craftsman (🎨) - Neon Aqua Theme
+  // 4. Frontend Craftsman (🎨)
   if (archLower.includes("frontend") || archLower.includes("craftsman")) {
     return {
-      accentColor: "#38bdf8", // vibrant aqua
-      bgColor: "#020b12",
-      themeTag: "🎨 PIXEL CRAFT VIBE",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(56,189,248,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(251,113,133,0.15) 0%, transparent 60%)",
-      cyberAccent: "#fb7185",
+      accentColor: "#1a73e8", // Google Blue
+      secondaryColor: "#ff00a0", // Coral Magenta
+      vibeTitle: "Pixel Perfect",
+      stickerText: "UI CRAFTSMAN",
+      bracketsColor: "#1e8e3e", // Google Green
+      arrowColor: "#f9ab00", // Google Yellow
+      bracketLabel: `css: "pixel_perfect"`,
+      starColor: "#06b6d4",
     };
   }
 
-  // 5. Systems Architect (🧱) & Backend Specialist (⚙️) - Console Crimson Theme
+  // 5. Systems / Backend Specialist (⚙️ / 🧱)
   if (archLower.includes("systems") || archLower.includes("backend") || archLower.includes("architect")) {
     return {
-      accentColor: "#f97316", // bronze rust
-      bgColor: "#0e0602",
-      themeTag: "⚙️ CONSOLE MONOLITH VIBE",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(249,115,22,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(185,28,28,0.15) 0%, transparent 60%)",
-      cyberAccent: "#b91c1c",
+      accentColor: "#d93025", // Google Red
+      secondaryColor: "#f9ab00", // Google Yellow
+      vibeTitle: "Systems Active",
+      stickerText: "SYS MONOLITH",
+      bracketsColor: "#1a73e8", // Google Blue
+      arrowColor: "#1e8e3e", // Google Green
+      bracketLabel: `alloc: "optimized"`,
+      starColor: "#ea4335",
     };
   }
 
   // 6. Default / Full Stack (🏆)
   return {
-    accentColor: "#00ff64", // acid neon green
-    bgColor: "#030c08",
-    themeTag: "🏆 QUANTUM FLOW VIBE",
-    gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(0,255,100,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(0,200,255,0.15) 0%, transparent 60%)",
-    cyberAccent: "#00c8ff",
+    accentColor: "#1a73e8", // Google Blue
+    secondaryColor: "#1e8e3e", // Google Green
+    vibeTitle: "Build the Stack",
+    stickerText: "FULL STACK",
+    bracketsColor: "#f9ab00", // Google Yellow
+    arrowColor: "#ea4335", // Google Red
+    bracketLabel: `engine: "verified"`,
+    starColor: "#f9ab00",
   };
 }
 
 /* ═══════════════════════════════════════════════════════
-   CARD 1 — OBSIDIAN TERMINAL (Tech-Fest Edition)
+   PREMIUM GOOGLE DEVELOPER PLAYFUL TICKET BADGE
 ═══════════════════════════════════════════════════════ */
-function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
-  const bar = (v: number) => "▓".repeat(Math.round(v / 10)) + "░".repeat(10 - Math.round(v / 10));
-  
+function GoogleDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
+  const barColor = (val: number) => {
+    if (val >= 75) return "#1e8e3e"; // Google green
+    if (val >= 50) return "#1a73e8"; // Google blue
+    return "#f9ab00"; // Google yellow
+  };
+
   return (
     <div style={{
       width: 900, height: 500,
-      background: c.bgColor,
+      background: "#f8f9fa", // crisp light paper
       position: "relative",
       overflow: "hidden",
-      fontFamily: "'Courier New', Courier, monospace",
+      fontFamily: "'Outfit', 'Inter', 'SF Pro Display', sans-serif",
       flexShrink: 0,
       userSelect: "none",
-      border: `2px solid ${c.accentColor}33`,
-      borderRadius: "16px",
-      boxShadow: `0 0 40px ${c.accentColor}11`,
+      border: "4px solid #1a1a1a",
+      borderRadius: "24px",
+      boxShadow: "0 14px 40px rgba(0,0,0,0.18)",
+      display: "flex",
     }}>
-      {/* terminal grids */}
+      
+      {/* Playful side notches (brutalist ticket style) */}
+      <div style={{
+        position: "absolute", left: -14, top: "50%", transform: "translateY(-50%)",
+        width: 28, height: 28, borderRadius: "50%", background: "#101010",
+        border: "4px solid #1a1a1a", zIndex: 10,
+      }} />
+      <div style={{
+        position: "absolute", right: -14, top: "50%", transform: "translateY(-50%)",
+        width: 28, height: 28, borderRadius: "50%", background: "#101010",
+        border: "4px solid #1a1a1a", zIndex: 10,
+      }} />
+
+      {/* Decorative vector background dots */}
       <div style={{
         position: "absolute", inset: 0,
-        backgroundImage: `linear-gradient(${c.accentColor}04 1px, transparent 1px), linear-gradient(90deg, ${c.accentColor}04 1px, transparent 1px)`,
-        backgroundSize: "25px 25px",
+        backgroundImage: "radial-gradient(#1a1a1a12 1.5px, transparent 1.5px)",
+        backgroundSize: "20px 20px",
       }} />
 
-      {/* diagonal circle design */}
+      {/* ════════════════════════════════
+         LEFT IDENTITY & STICKERS COLUMN (60%)
+         ════════════════════════════════ */}
       <div style={{
-        position: "absolute", right: -50, top: -50,
-        width: 300, height: 300,
-        border: `1px solid ${c.accentColor}15`,
-        borderRadius: "50%",
-      }} />
-
-      {/* glowing top neon laser bar */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0,
-        height: 4,
-        background: `linear-gradient(90deg, ${c.accentColor} 0%, ${c.cyberAccent} 50%, transparent 100%)`,
-        boxShadow: `0 2px 10px ${c.accentColor}55`,
-      }} />
-
-      {/* scan decorative line */}
-      <div style={{ position: "absolute", left: 48, top: 0, bottom: 0, width: 1, background: `${c.accentColor}15` }} />
-
-      <div style={{ position: "relative", zIndex: 1, padding: "44px 52px" }}>
-
-        {/* Header row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32 }}>
-          <div>
-            <div style={{ fontSize: 10, color: `${c.accentColor}bb`, letterSpacing: 4, marginBottom: 10, fontWeight: "bold" }}>
-              ◉ XRAY STATUS RECON · {c.themeTag}
-            </div>
-            <div style={{ fontSize: 36, fontWeight: 900, color: "#f8fafc", letterSpacing: -0.5, lineHeight: 1 }}>
-              {p.username}
-            </div>
-            <div style={{ fontSize: 12, color: `${c.cyberAccent}aa`, marginTop: 6, letterSpacing: 2, fontWeight: "bold" }}>
-              developer.status.ticket // verified
-            </div>
-          </div>
-
-          {/* Glowing score badge */}
-          <div style={{
-            textAlign: "right",
-            background: "rgba(0,0,0,0.4)",
-            border: `1px solid ${c.accentColor}55`,
-            borderRadius: "12px",
-            padding: "8px 24px",
-            boxShadow: `0 0 20px ${c.accentColor}15`,
-          }}>
-            <div style={{ fontSize: 72, fontWeight: 900, color: c.accentColor, lineHeight: 1, letterSpacing: -3 }}>
-              {p.score}
-            </div>
-            <div style={{ fontSize: 10, color: "#ffffff44", letterSpacing: 2, marginTop: -2 }}>GITHUB SCORE</div>
-          </div>
-        </div>
-
-        {/* Dynamic customized merit badges */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 36 }}>
-          {p.roles.map((r, i) => (
-            <span key={r} style={{
-              padding: "6px 14px",
-              border: `1px solid ${i === 0 ? c.accentColor : c.cyberAccent}44`,
-              color: i === 0 ? c.accentColor : c.cyberAccent,
-              fontSize: 11,
-              fontWeight: "bold",
-              letterSpacing: 1.5,
-              textTransform: "uppercase",
-              background: `${c.accentColor}06`,
-              borderRadius: "4px",
-            }}>{r}</span>
-          ))}
-          <span style={{
-            padding: "6px 14px",
-            background: c.accentColor,
-            color: c.bgColor,
-            fontSize: 11,
-            fontWeight: "extrabold",
-            letterSpacing: 2,
-            textTransform: "uppercase",
-            borderRadius: "4px",
-            boxShadow: `0 0 15px ${c.accentColor}33`,
-          }}>{p.rank}</span>
-        </div>
-
-        {/* Metrics Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-          {[
-            ["CONSISTENCY", p.stats.consistency],
-            ["PROFILE_BRANDING", p.stats.profile],
-            ["OPEN_SOURCE", p.stats.openSource],
-          ].map(([label, val], i) => (
-            <div key={label as string} style={{
-              borderLeft: i === 0 ? "none" : `1px solid ${c.accentColor}22`,
-              paddingLeft: i === 0 ? 0 : 28,
-              paddingRight: 28,
-            }}>
-              <div style={{ fontSize: 10, color: "#ffffff33", letterSpacing: 2, marginBottom: 8, fontWeight: "bold" }}>{label}</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#f8fafc", letterSpacing: -1, marginBottom: 6 }}>{val}%</div>
-              <div style={{ fontSize: 11, color: `${c.accentColor}aa`, letterSpacing: 1 }}>{bar(val as number)}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div style={{
-          position: "absolute", bottom: 36, left: 52, right: 52,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          borderTop: `1px solid ${c.accentColor}22`, paddingTop: 16,
-        }}>
-          <div style={{ fontSize: 9, color: "#ffffff22", letterSpacing: 2, fontWeight: "bold" }}>
-            AUTHENTICATED · GITHUBXRAY.DEV · BATCH_{p.year}
-          </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 9, color: `${c.accentColor}bb`, fontWeight: "bold" }}>SEC_RECON_VERIFIED</span>
-            {["◆", "◆", "◆"].map((d, i) => (
-              <span key={i} style={{ fontSize: 6, color: i === 0 ? c.accentColor : "#ffffff15" }}>{d}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════
-   CARD 2 — PAPER SYSTEM (Brutalist Tech-Fest Poster)
-═══════════════════════════════════════════════════════ */
-function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
-  return (
-    <div style={{
-      width: 900, height: 500,
-      background: "#f3efe4",
-      position: "relative",
-      overflow: "hidden",
-      fontFamily: "'Courier New', Courier, monospace",
-      flexShrink: 0,
-      userSelect: "none",
-      border: "4px solid #0a0a0a",
-      borderRadius: "16px",
-      boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-    }}>
-      {/* grain zine paper texture */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: "radial-gradient(circle, #0000000a 1px, transparent 1px)",
-        backgroundSize: "3px 3px",
-      }} />
-
-      {/* brutalist block */}
-      <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 12, background: "#0a0a0a" }} />
-
-      {/* brutalist ticket header */}
-      <div style={{
-        position: "absolute", top: 0, left: 12, right: 0, height: 52,
-        background: "#0a0a0a",
-        display: "flex", alignItems: "center",
-        padding: "0 32px",
-        gap: 20,
+        width: "60%",
+        padding: "44px 36px 44px 48px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        position: "relative",
       }}>
-        <span style={{ fontSize: 11, color: "#f3efe4", letterSpacing: 3, fontWeight: "extrabold" }}>GITHUB XRAY</span>
-        <span style={{ width: 2, height: 14, background: "#f3efe4aa" }} />
-        <span style={{ fontSize: 10, color: "#f3efe4aa", letterSpacing: 3, fontWeight: "bold" }}>DEVELOPER REPORT NO_{p.year}</span>
-        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <span style={{
-            padding: "2px 8px", fontSize: 9,
-            background: "#f3efe4", color: "#0a0a0a",
-            letterSpacing: 1.5, fontWeight: "extrabold",
-            textTransform: "uppercase",
-          }}>{c.themeTag}</span>
-        </div>
-      </div>
-
-      <div style={{ position: "relative", zIndex: 1, padding: "76px 44px 32px 48px" }}>
-
-        {/* big name */}
-        <div style={{ marginBottom: 4 }}>
-          <div style={{ fontSize: 10, color: "#0a0a0a66", letterSpacing: 3, marginBottom: 6, fontWeight: "bold" }}>
-            ↳ AUTHORIZED IDENTITY
-          </div>
-          <div style={{
-            fontSize: 56, fontWeight: 900, color: "#0a0a0a",
-            lineHeight: 0.85, letterSpacing: -2,
-            textTransform: "uppercase",
-          }}>
-            {p.name}
-          </div>
-          <div style={{ fontSize: 13, color: "#0a0a0a66", marginTop: 10, letterSpacing: 1.5, fontWeight: "bold" }}>
-            handle: github.com/{p.username}
-          </div>
-        </div>
-
-        {/* grid segment */}
-        <div style={{ display: "flex", alignItems: "stretch", gap: 0, marginTop: 24, borderTop: "3px solid #0a0a0a", borderBottom: "3px solid #0a0a0a" }}>
-          
-          {/* big ink score stamp */}
-          <div style={{
-            padding: "16px 28px 16px 0", borderRight: "3px solid #0a0a0a",
-            display: "flex", flexDirection: "column", justifyContent: "center",
-            minWidth: 140,
-          }}>
-            <div style={{ fontSize: 10, color: "#0a0a0a66", letterSpacing: 2, marginBottom: 2, fontWeight: "bold" }}>OVERALL</div>
-            <div style={{ fontSize: 68, fontWeight: 900, color: "#0a0a0a", lineHeight: 1, letterSpacing: -3 }}>{p.score}</div>
-            <div style={{ fontSize: 10, color: "#0a0a0a66", marginTop: -4, fontWeight: "bold" }}>OUT OF 100</div>
-          </div>
-
-          {/* dynamic subscores */}
-          {[["CONSISTENCY", p.stats.consistency], ["BRANDING", p.stats.profile], ["OPEN SOURCE", p.stats.openSource]].map(([label, val], i) => (
-            <div key={label as string} style={{
-              flex: 1,
-              padding: "16px 20px",
-              borderRight: i < 2 ? "3px solid #0a0a0a" : "none",
-              display: "flex", flexDirection: "column", justifyContent: "space-between",
+        {/* Top title line */}
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            <span style={{
+              fontSize: 10, fontWeight: 900, color: "#1a1a1a",
+              letterSpacing: 2, textTransform: "uppercase",
+              fontFamily: "monospace",
+              background: "#1a1a1a12",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              border: "1.5px solid #1a1a1a",
             }}>
-              <div style={{ fontSize: 9, color: "#0a0a0a66", letterSpacing: 2, fontWeight: "bold", textTransform: "uppercase" }}>{label}</div>
-              <div style={{ fontSize: 40, fontWeight: 900, color: "#0a0a0a", letterSpacing: -2, lineHeight: 1 }}>{val}</div>
-              <div style={{ height: 6, background: "rgba(0,0,0,0.06)", border: "1px solid #0a0a0a", position: "relative" }}>
-                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${val}%`, background: "#0a0a0a" }} />
-              </div>
-            </div>
-          ))}
-
-          {/* rank badge */}
-          <div style={{
-            padding: "16px 20px",
-            borderLeft: "3px solid #0a0a0a",
-            background: "#0a0a0a",
-            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-            minWidth: 130,
-          }}>
-            <div style={{ fontSize: 9, color: "#f3efe477", letterSpacing: 2, marginBottom: 6, fontWeight: "bold" }}>RANKING</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: "#f3efe4", textAlign: "center", letterSpacing: -0.5 }}>{p.rank}</div>
-            <div style={{ fontSize: 9, color: "#f3efe455", marginTop: 4, letterSpacing: 1, fontWeight: "bold" }}>GLOBAL LEVEL</div>
+              ◉ VERIFIED SPECIMEN
+            </span>
           </div>
-        </div>
 
-        {/* footer */}
-        <div style={{
-          marginTop: 18, display: "flex", justifyContent: "space-between", alignItems: "center",
-        }}>
-          <div style={{ fontSize: 10, color: "#0a0a0a44", letterSpacing: 2, fontWeight: "bold" }}>dev.report_spec // git-xray</div>
-          <div style={{ fontSize: 10, color: "#0a0a0a44", letterSpacing: 2, fontWeight: "bold" }}>SCAN FREE · NO SIGN-IN · 30S</div>
-          
-          {/* custom color matching ink stamp */}
-          <div style={{
-            border: `3px double ${c.accentColor}`, padding: "4px 14px",
-            fontSize: 11, color: c.accentColor, letterSpacing: 4, fontWeight: "extrabold",
-            textTransform: "uppercase",
-            transform: "rotate(-3deg)",
-            borderRadius: "4px",
-            boxShadow: `0 0 10px ${c.accentColor}15`,
-          }}>
-            VERIFIED
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════
-   CARD 3 — CYBER-GLOW (Tech-Fest Ticket Special)
-═══════════════════════════════════════════════════════ */
-function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
-  const pct = (v: number) => `${v}%`;
-  return (
-    <div style={{
-      width: 900, height: 500,
-      background: "#08060c",
-      position: "relative",
-      overflow: "hidden",
-      fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
-      flexShrink: 0,
-      userSelect: "none",
-      border: `2px solid ${c.accentColor}33`,
-      borderRadius: "16px",
-      boxShadow: `0 0 50px ${c.accentColor}11`,
-    }}>
-      {/* Dynamic Glowing Mesh Gradient Bloom */}
-      <div style={{
-        position: "absolute", top: -100, left: "20%",
-        width: 500, height: 350,
-        background: c.gradientBloom,
-        pointerEvents: "none",
-        filter: "blur(40px)",
-      }} />
-
-      {/* Cyber grid texture */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)`,
-        backgroundSize: "40px 40px",
-      }} />
-
-      {/* Glowing top boundary laser line */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: 1,
-        background: `linear-gradient(90deg, transparent, ${c.accentColor}ee 30%, ${c.cyberAccent}ee 70%, transparent)`,
-        boxShadow: `0 0 20px ${c.accentColor}`,
-      }} />
-
-      <div style={{ position: "relative", zIndex: 1, padding: "44px 52px" }}>
-
-        {/* Header row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 30 }}>
-          <div>
+          {/* Big heavy Google-Style graphic heading */}
+          <div style={{ position: "relative" }}>
             <div style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "5px 14px",
-              background: `${c.accentColor}12`,
-              border: `1px solid ${c.accentColor}44`,
-              borderRadius: 20,
-              marginBottom: 14,
-              boxShadow: `0 0 10px ${c.accentColor}11`,
+              fontSize: 48, fontWeight: 900, color: "#1a1a1a",
+              lineHeight: 1.05, letterSpacing: -1.5,
+              textTransform: "capitalize",
             }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.accentColor, display: "inline-block", boxShadow: `0 0 8px ${c.accentColor}` }} />
-              <span style={{ fontSize: 10, color: c.accentColor, letterSpacing: 2, fontWeight: "extrabold" }}>{c.themeTag}</span>
+              {c.vibeTitle}
             </div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: "#f8fafc", letterSpacing: -1, lineHeight: 1 }}>
+            
+            {/* Small dynamic star decoration */}
+            <svg style={{ position: "absolute", right: 20, top: -10, fill: c.starColor }} width="24" height="24" viewBox="0 0 24 24">
+              <path d="M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3z" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Playful vector ornaments / brackets containing candidate identity */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 20,
+          background: "#ffffff",
+          border: "3px solid #1a1a1a",
+          borderRadius: "16px",
+          padding: "16px 20px",
+          boxShadow: "4px 4px 0px #1a1a1a",
+          margin: "24px 0",
+        }}>
+          {/* Thick curly bracket */}
+          <div style={{
+            fontSize: 44, fontWeight: 500, color: c.bracketsColor,
+            lineHeight: 1, marginTop: -6, fontFamily: "monospace",
+          }}>
+            {`{`}
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontSize: 22, fontWeight: 900, color: "#1a1a1a",
+              letterSpacing: -0.5, textTransform: "uppercase",
+            }}>
               {p.name}
             </div>
-            <div style={{ fontSize: 14, color: "#64748b", marginTop: 6, letterSpacing: 0.5, fontWeight: "500" }}>
-              github.com/{p.username}
-            </div>
-          </div>
-
-          {/* Neon Circular Ring Gauge */}
-          <div style={{
-            width: 100, height: 100, position: "relative",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <svg width="100" height="100" style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="6" />
-              <circle cx="50" cy="50" r="42" fill="none" stroke="url(#techFestGrad)" strokeWidth="6"
-                strokeDasharray={`${(p.score / 100) * 263.8} 263.8`} strokeLinecap="round"
-                style={{ filter: `drop-shadow(0 0 6px ${c.accentColor})` }} />
-              <defs>
-                <linearGradient id="techFestGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={c.accentColor} />
-                  <stop offset="100%" stopColor={c.cyberAccent} />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#f8fafc", lineHeight: 1, letterSpacing: -1 }}>{p.score}</div>
-              <div style={{ fontSize: 9, color: "#64748b", marginTop: 2, fontWeight: "bold" }}>SCORE</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dynamic Category Badges */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>
-          {p.roles.map((r, i) => (
-            <span key={r} style={{
-              padding: "6px 16px",
-              background: i === 0 ? `${c.accentColor}18` : `${c.cyberAccent}12`,
-              border: `1px solid ${i === 0 ? c.accentColor : c.cyberAccent}33`,
-              borderRadius: 8,
-              color: i === 0 ? c.accentColor : c.cyberAccent,
-              fontSize: 12, letterSpacing: 0.5, fontWeight: "bold",
-              boxShadow: i === 0 ? `0 0 10px ${c.accentColor}11` : "none",
-            }}>{r}</span>
-          ))}
-          <span style={{
-            padding: "6px 16px",
-            background: "rgba(234,179,8,0.08)",
-            border: "1px solid rgba(234,179,8,0.25)",
-            borderRadius: 8,
-            color: "#fbbf24",
-            fontSize: 12, letterSpacing: 0.5, fontWeight: "bold",
-          }}>{p.rank}</span>
-        </div>
-
-        {/* Dynamic metrics widgets */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
-          {[
-            ["Consistency", p.stats.consistency, c.accentColor, `${c.accentColor}06`],
-            ["Profile Branding", p.stats.profile, c.cyberAccent, `${c.cyberAccent}04`],
-            ["Open Source Dev", p.stats.openSource, "#eab308", "rgba(234,179,8,0.04)"],
-          ].map(([label, val, color, bg]) => (
-            <div key={label as string} style={{
-              background: bg as string,
-              border: `1px solid ${color}1a`,
-              borderRadius: 12,
-              padding: "16px 20px",
-              boxShadow: `inset 0 1px 1px rgba(255,255,255,0.02)`,
+            <div style={{
+              fontSize: 12, fontWeight: 700, color: "#5f6368",
+              fontFamily: "monospace", marginTop: 2,
             }}>
-              <div style={{ fontSize: 11, color: "#64748b", letterSpacing: 0.5, marginBottom: 8, fontWeight: "bold" }}>{label as string}</div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "#f8fafc", letterSpacing: -2, lineHeight: 1, marginBottom: 10 }}>{val}%</div>
-              <div style={{ height: 4, background: "rgba(255,255,255,0.04)", borderRadius: 2 }}>
-                <div style={{ height: "100%", width: pct(val as number), background: color as string, borderRadius: 2, boxShadow: `0 0 8px ${color}` }} />
+              {c.bracketLabel}
+            </div>
+          </div>
+
+          <div style={{
+            fontSize: 44, fontWeight: 500, color: c.bracketsColor,
+            lineHeight: 1, marginTop: -6, fontFamily: "monospace",
+          }}>
+            {`}`}
+          </div>
+        </div>
+
+        {/* Scattered "laptop stickers" matching google aesthetic */}
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          
+          {/* Yellow pill sticker */}
+          <div style={{
+            background: "#f9ab00",
+            color: "#1a1a1a",
+            border: "2px solid #1a1a1a",
+            borderRadius: "50px",
+            padding: "6px 14px",
+            fontSize: 11,
+            fontWeight: 800,
+            boxShadow: "2px 2px 0px #1a1a1a",
+            letterSpacing: 0.5,
+          }}>
+            {c.stickerText}
+          </div>
+
+          {/* Sparkle emblem sticker */}
+          <div style={{
+            background: "#1a73e8",
+            color: "#ffffff",
+            border: "2px solid #1a1a1a",
+            borderRadius: "8px",
+            width: 32, height: 32,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "2px 2px 0px #1a1a1a",
+            transform: "rotate(-6deg)",
+          }} className="justify-center">
+            <span style={{ fontSize: 16, fontWeight: 900, marginTop: -2 }}>✦</span>
+          </div>
+
+          {/* Dynamic Green/Red indicator arrow sticker */}
+          <div style={{
+            background: c.arrowColor,
+            color: "#ffffff",
+            border: "2px solid #1a1a1a",
+            borderRadius: "50px",
+            padding: "6px 14px",
+            fontSize: 11,
+            fontWeight: 800,
+            boxShadow: "2px 2px 0px #1a1a1a",
+            display: "flex", alignItems: "center", gap: 6,
+          }}>
+            <span>STATS</span>
+            <span style={{ fontSize: 13, lineHeight: 1 }}>➔</span>
+          </div>
+
+          {/* Starburst ornament */}
+          <div style={{
+            border: "2px dashed #1a1a1a",
+            borderRadius: "50%",
+            width: 32, height: 32,
+            display: "flex", alignItems: "center",
+            transform: "rotate(15deg)",
+          }} className="justify-center">
+            <span style={{ fontSize: 14, color: "#1a1a1a88", fontWeight: "bold" }}>✳</span>
+          </div>
+        </div>
+
+        {/* Username link footer */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#1a1a1a55", fontFamily: "monospace", marginTop: 24 }}>
+          githubxray.dev · git-identity: {p.username}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════
+         RIGHT RECRUITER STATS COLUMN (40%)
+         ════════════════════════════════ */}
+      <div style={{
+        width: "40%",
+        borderLeft: "3.5px dashed #1a1a1a", // perforated brutalist border
+        padding: "44px 44px 44px 36px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        background: "#ffffff", // clean pure white backing
+      }}>
+        
+        {/* Giant Playful Vector Overall Score Stamp */}
+        <div style={{
+          background: "#f9ab00", // bright google yellow
+          border: "4px solid #1a1a1a",
+          borderRadius: "20px",
+          padding: "20px",
+          textAlign: "center",
+          boxShadow: "5px 5px 0px #1a1a1a",
+          position: "relative",
+        }}>
+          {/* absolute decorative curly bracket badge */}
+          <div style={{
+            position: "absolute", left: -12, top: -14,
+            width: 24, height: 24, borderRadius: "50%",
+            background: "#ea4335", border: "2px solid #1a1a1a",
+            display: "flex", alignItems: "center",
+            fontSize: 10, color: "#ffffff", fontWeight: 900,
+          }} className="justify-center">
+            {`{`}
+          </div>
+
+          <div style={{ fontSize: 72, fontWeight: 900, color: "#1a1a1a", lineHeight: 0.9, letterSpacing: -4 }}>
+            {p.score}
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 900, color: "#1a1a1a", letterSpacing: 2, marginTop: 4 }}>
+            DEVELOPER SCORE
+          </div>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#1a1a1a88", letterSpacing: 0.5, marginTop: 2 }}>
+            {p.rank} GLOBAL
+          </div>
+        </div>
+
+        {/* Dynamic clean geometric subscore bars */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, margin: "24px 0" }}>
+          {[
+            ["CONSISTENCY", p.stats.consistency],
+            ["BRANDING", p.stats.profile],
+            ["OPEN_SOURCE", p.stats.openSource],
+          ].map(([label, val]) => (
+            <div key={label as string}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, fontWeight: 800, color: "#1a1a1a", marginBottom: 5 }}>
+                <span>{label}</span>
+                <span>{val}%</span>
+              </div>
+              
+              {/* Playful vector progress bar with thick outline */}
+              <div style={{
+                height: 12,
+                background: "#f8f9fa",
+                border: "2px solid #1a1a1a",
+                borderRadius: "50px",
+                overflow: "hidden",
+                position: "relative",
+              }}>
+                <div style={{
+                  height: "100%",
+                  width: `${val}%`,
+                  background: barColor(val as number),
+                  borderRadius: "50px",
+                }} />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Footer */}
-        <div style={{
-          position: "absolute", bottom: 32, left: 52, right: 52,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-        }}>
-          <div style={{ fontSize: 11, color: "#334155", letterSpacing: 1.5, fontWeight: "bold" }}>GITHUBXRAY.DEV</div>
-          <div style={{ fontSize: 11, color: "#334155", letterSpacing: 1.5, fontWeight: "bold" }}>TECH_FEST_BADGE_V2</div>
+        {/* Google for Developers Inspired branding tag */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#1a1a1a", letterSpacing: 1.5 }}>
+            GOOGLE FOR DEVS
+          </div>
+          <div style={{ fontSize: 9, fontWeight: 800, color: "#1a1a1a44", fontFamily: "monospace" }}>
+            BADGE_NO_{p.year}
+          </div>
         </div>
       </div>
     </div>
@@ -572,23 +442,16 @@ function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
 /* ═══════════════════════════════════════════════════════
    MAIN SHARE CARD WRAPPER
 ═══════════════════════════════════════════════════════ */
-const TABS = [
-  { id: "obsidian", label: "Obsidian Terminal", sub: "Monospace Zine" },
-  { id: "paper", label: "Paper Brutalist", sub: "Graphic Poster" },
-  { id: "cyber", label: "Cyber-Glow", sub: "Tech-Fest Ticket" },
-];
-
 export default function ShareCard({ data, username, name }: ShareCardProps) {
-  const [activeTab, setActiveTab] = useState<"obsidian" | "paper" | "cyber">("cyber");
   const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
 
-  // Prepare dynamic merit badges based on stats
+  // Prepare profile fields dynamically mapped from API response
   const profileData: ProfileThemeData = {
     username: username,
     name: name || username,
     score: data.score,
-    roles: getDeveloperStatsBadges(data), // customized dynamically based on their actual stats!
-    rank: `Top ${data.percentile}%`,
+    roles: getDeveloperStatsBadges(data), // Custom stats merit badges!
+    rank: `TOP ${data.percentile}%`,
     stats: {
       consistency: data.consistencyScore,
       profile: data.profileScore,
@@ -598,9 +461,9 @@ export default function ShareCard({ data, username, name }: ShareCardProps) {
   };
 
   // Obtain brand customizations dynamically based on tag/archetype
-  const customizations = getDynamicCustomizations(data.archetype, data.techIdentity);
+  const customizations = getGoogleDevCustomizations(data.archetype, data.techIdentity, data.score);
 
-  // Prepare recruiter-ready social post copy
+  // Prepare highly descriptive recruiter-ready social post copy
   const shareText = `🚀 Just got my GitHub footprint X-rayed! 🔎
 
 📊 Overall Score: ${data.score}/100
@@ -622,7 +485,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
     const url = `https://githubx-ray.vercel.app/${username}`;
 
     if (platform === "linkedin") {
-      // 1. Attempt to write to clipboard
+      // 1. Copy marketing post automatically to clipboard
       try {
         navigator.clipboard.writeText(shareText);
       } catch (err) {
@@ -631,7 +494,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       // 2. ALWAYS display our beautiful instructions alert overlay!
       setShowLinkedInAlert(true);
     } else if (platform === "x") {
-      const xText = `My GitHub got X-rayed! 👀\nScore: ${data.score}/100\nArchetype: ${data.archetype} (${profileData.rank})\n\nScan yours free at:`;
+      const xText = `My GitHub footprint got X-rayed! 👀\nScore: ${data.score}/100\nArchetype: ${data.archetype}\n\nGet your status card free here:`;
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(url)}`,
         "_blank"
@@ -702,44 +565,20 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       {/* Title & Introduction */}
       <div className="mb-6">
         <div className="text-[10px] text-[#5DCAA5] tracking-[0.18em] uppercase font-bold mb-1">
-          ◉ DEV STATUS CARDS
+          ◉ DEV STATUS CARD
         </div>
         <h3 className="text-[17px] font-extrabold text-[#ebebeb] tracking-tight">
-          Tech-Festival Ticket Badges
+          Personalized Google Developer Badge
         </h3>
         <p className="text-[12px] text-[#787672] mt-1">
-          Customized aesthetic tags mapped automatically to your coding profile. Screenshot and showcase your developer status!
+          A completely custom, visual developer spec ticket dynamically optimized for your GitHub stack and stats footprint. Screenshot and share your status!
         </p>
-      </div>
-
-      {/* Tab Switcher */}
-      <div className="grid grid-cols-3 gap-2 mb-6">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id as "obsidian" | "paper" | "cyber")}
-            className={`py-2 px-2 rounded-lg border text-center transition-all cursor-pointer ${
-              activeTab === t.id
-                ? "bg-[#085041] border-[#1D9E75] text-[#5DCAA5]"
-                : "bg-transparent border-[#242424] hover:border-[#2e2e2e] text-[#787672]"
-            }`}
-          >
-            <div className="text-[11.5px] font-bold tracking-tight">
-              {t.label}
-            </div>
-            <div className={`text-[8px] mt-[1px] tracking-wide uppercase font-bold ${activeTab === t.id ? "text-[#5DCAA5] opacity-80" : "text-[#4a4a48]"}`}>
-              {t.sub}
-            </div>
-          </button>
-        ))}
       </div>
 
       {/* High-Resolution Poster Card Preview */}
       <div className="w-full overflow-x-auto overflow-y-hidden rounded-xl border border-[#242424] bg-[#050505] mb-5 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-950 flex justify-start items-center p-1">
         <div style={{ width: 900, height: 500, flexShrink: 0 }} className="mx-auto select-none">
-          {activeTab === "obsidian" && <ObsidianCard p={profileData} c={customizations} />}
-          {activeTab === "paper" && <PaperCard p={profileData} c={customizations} />}
-          {activeTab === "cyber" && <CyberGlowCard p={profileData} c={customizations} />}
+          <GoogleDevCard p={profileData} c={customizations} />
         </div>
       </div>
 
@@ -747,7 +586,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       <div className="bg-[#181818] border border-[#242424] rounded-lg p-[14px] flex items-start gap-3 mb-6">
         <span className="text-[14px] leading-none select-none">🎯</span>
         <div className="text-[11.5px] leading-relaxed text-[#b8b8b0]">
-          <strong className="text-[#ebebeb]">Custom {customizations.themeTag} Theme Mapped:</strong> We detected your unique GitHub footprint and styled these themes specifically to match your vibe! <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post.
+          <strong className="text-[#ebebeb]">Google-Style {customizations.stickerText} Theme Applied:</strong> We detected your primary identity tags and dynamically calibrated these vector stars, stickers, and color presets to fit your developer brand perfectly. <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post!
         </div>
       </div>
 
