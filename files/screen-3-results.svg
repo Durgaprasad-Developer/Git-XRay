@@ -1,0 +1,164 @@
+<svg viewBox="0 0 640 1100" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <!-- Background -->
+  <rect width="640" height="1100" fill="#0a0a0a" rx="16"/>
+  <rect x="1" y="1" width="638" height="1098" fill="none" stroke="#2a2a2a" stroke-width="1" rx="16"/>
+
+  <!-- Nav -->
+  <rect x="0" y="0" width="640" height="56" fill="#0d0d0d" rx="16"/>
+  <rect x="0" y="40" width="640" height="16" fill="#0d0d0d"/>
+  <rect x="0" y="55" width="640" height="1" fill="#2a2a2a"/>
+  <text x="28" y="34" font-family="sans-serif" font-size="15" font-weight="800" fill="#5DCAA5">GitHub</text>
+  <text x="92" y="34" font-family="sans-serif" font-size="15" font-weight="800" fill="#888780">Xray</text>
+  <rect x="574" y="20" width="42" height="16" fill="#085041" rx="8"/>
+  <text x="595" y="31" font-family="monospace" font-size="8" fill="#5DCAA5" text-anchor="middle">Beta</text>
+
+  <!-- Topbar -->
+  <text x="28" y="90" font-family="monospace" font-size="11" fill="#5F5E5A">← scan another</text>
+  <rect x="520" y="74" width="96" height="26" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="13"/>
+  <circle cx="537" cy="87" r="9" fill="#085041"/>
+  <text x="537" y="91" font-family="monospace" font-size="7" fill="#5DCAA5" text-anchor="middle">AC</text>
+  <text x="552" y="91" font-family="monospace" font-size="10" fill="#b0b0a8">alexchen</text>
+
+  <!-- Score Hero Card -->
+  <rect x="28" y="108" width="584" height="108" fill="#1a1a1a" stroke="#333" stroke-width="1" rx="12"/>
+  <!-- Big score -->
+  <text x="52" y="178" font-family="sans-serif" font-size="62" font-weight="800" fill="#5DCAA5" letter-spacing="-2">74</text>
+  <text x="110" y="178" font-family="monospace" font-size="16" fill="#5F5E5A">/100</text>
+  <text x="52" y="124" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.12em">XRAY SCORE</text>
+  <!-- Archetype badge -->
+  <rect x="168" y="120" width="138" height="22" fill="#085041" stroke="#0F6E56" stroke-width="1" rx="11"/>
+  <text x="237" y="134" font-family="monospace" font-size="10" font-weight="700" fill="#5DCAA5" text-anchor="middle" letter-spacing="0.04em">◆ Hackathon Builder</text>
+  <!-- Tagline -->
+  <text x="168" y="162" font-family="monospace" font-size="10" fill="#888780">Strong project velocity. Builds fast, ships often.</text>
+  <text x="168" y="178" font-family="monospace" font-size="10" fill="#888780">Consistency needs work — spikes around events.</text>
+
+  <!-- Subscores Grid -->
+  <!-- Row 1 -->
+  <rect x="28" y="228" width="186" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="44" y="248" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">CONSISTENCY</text>
+  <text x="44" y="275" font-family="sans-serif" font-size="22" font-weight="800" fill="#EF9F27">68</text>
+  <text x="76" y="275" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="44" y="286" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="44" y="286" width="105" height="3" fill="#EF9F27" rx="1"/>
+
+  <rect x="226" y="228" width="186" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="242" y="248" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">PROJECT QUALITY</text>
+  <text x="242" y="275" font-family="sans-serif" font-size="22" font-weight="800" fill="#EF9F27">62</text>
+  <text x="274" y="275" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="242" y="286" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="242" y="286" width="95" height="3" fill="#EF9F27" rx="1"/>
+
+  <rect x="424" y="228" width="188" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="440" y="248" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">OPEN SOURCE</text>
+  <text x="440" y="275" font-family="sans-serif" font-size="22" font-weight="800" fill="#E24B4A">34</text>
+  <text x="472" y="275" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="440" y="286" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="440" y="286" width="52" height="3" fill="#E24B4A" rx="1"/>
+
+  <!-- Row 2 -->
+  <rect x="28" y="308" width="186" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="44" y="328" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">PROFILE BRANDING</text>
+  <text x="44" y="355" font-family="sans-serif" font-size="22" font-weight="800" fill="#5DCAA5">88</text>
+  <text x="76" y="355" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="44" y="366" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="44" y="366" width="136" height="3" fill="#1D9E75" rx="1"/>
+
+  <rect x="226" y="308" width="186" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="242" y="328" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">TECHNICAL DEPTH</text>
+  <text x="242" y="355" font-family="sans-serif" font-size="22" font-weight="800" fill="#EF9F27">71</text>
+  <text x="274" y="355" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="242" y="366" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="242" y="366" width="109" height="3" fill="#EF9F27" rx="1"/>
+
+  <rect x="424" y="308" width="188" height="72" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+  <text x="440" y="328" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.1em">RECRUITER READY</text>
+  <text x="440" y="355" font-family="sans-serif" font-size="22" font-weight="800" fill="#EF9F27">69</text>
+  <text x="472" y="355" font-family="monospace" font-size="10" fill="#5F5E5A">/100</text>
+  <rect x="440" y="366" width="154" height="3" fill="#1f1f1f" rx="1"/>
+  <rect x="440" y="366" width="106" height="3" fill="#EF9F27" rx="1"/>
+
+  <!-- Honest Review Section -->
+  <rect x="28" y="394" width="584" height="100" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="10"/>
+  <rect x="44" y="410" width="3" height="10" fill="#1D9E75" rx="1"/>
+  <text x="54" y="420" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.14em">HONEST REVIEW</text>
+  <rect x="44" y="432" width="2" height="50" fill="#085041"/>
+  <text x="54" y="448" font-family="monospace" font-size="10" fill="#b0b0a8">You clearly love building. Your commit graph lights up around</text>
+  <text x="54" y="464" font-family="monospace" font-size="10" fill="#e8e8e8" font-weight="bold">hackathons, but repositories tell a story of starting, not finishing.</text>
+  <text x="54" y="480" font-family="monospace" font-size="10" fill="#b0b0a8">A recruiter scrolling your profile sees raw code, not packaged</text>
+
+  <!-- Recruiter Section -->
+  <rect x="28" y="506" width="584" height="168" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="10"/>
+  <rect x="44" y="522" width="3" height="10" fill="#1D9E75" rx="1"/>
+  <text x="54" y="532" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.14em">RECRUITER IMPRESSION · FIRST 15 SECONDS</text>
+  <!-- Items -->
+  <circle cx="52" cy="558" r="4" fill="#1D9E75"/>
+  <text x="64" y="562" font-family="monospace" font-size="10" fill="#e8e8e8">Active and curious — clearly loves experimenting with new tech.</text>
+  <circle cx="52" cy="582" r="4" fill="#1D9E75"/>
+  <text x="64" y="586" font-family="monospace" font-size="10" fill="#e8e8e8">Strong prototyping instinct. Good fit for fast-moving teams.</text>
+  <circle cx="52" cy="606" r="4" fill="#EF9F27"/>
+  <text x="64" y="610" font-family="monospace" font-size="10" fill="#e8e8e8">Hard to assess depth — no architecture docs, no prod links.</text>
+  <circle cx="52" cy="630" r="4" fill="#E24B4A"/>
+  <text x="64" y="634" font-family="monospace" font-size="10" fill="#e8e8e8">Zero open source contributions. No team collaboration evidence.</text>
+  <!-- Verdict -->
+  <rect x="36" y="644" width="560" height="22" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="4,3" rx="6"/>
+  <circle cx="52" cy="655" r="4" fill="#5DCAA5"/>
+  <text x="64" y="659" font-family="monospace" font-size="10" fill="#888780">Verdict: </text>
+  <text x="112" y="659" font-family="monospace" font-size="10" fill="#5DCAA5" font-weight="bold">Strong internship candidate. Would advance to call.</text>
+
+  <!-- Improvements section (compact) -->
+  <rect x="28" y="686" width="584" height="142" fill="#111" stroke="#2a2a2a" stroke-width="1" rx="10"/>
+  <rect x="44" y="702" width="3" height="10" fill="#1D9E75" rx="1"/>
+  <text x="54" y="712" font-family="monospace" font-size="8" fill="#5F5E5A" letter-spacing="0.14em">TOP IMPROVEMENTS · HIGHEST IMPACT</text>
+  <!-- Items -->
+  <circle cx="52" cy="736" r="8" fill="#1D9E75"/>
+  <text x="52" y="740" font-family="monospace" font-size="8" fill="#fff" text-anchor="middle">1</text>
+  <text x="68" y="740" font-family="monospace" font-size="10" fill="#e8e8e8">Add README files to your top 5 repos with screenshots</text>
+  <circle cx="52" cy="760" r="8" fill="#1D9E75"/>
+  <text x="52" y="764" font-family="monospace" font-size="8" fill="#fff" text-anchor="middle">2</text>
+  <text x="68" y="764" font-family="monospace" font-size="10" fill="#e8e8e8">Deploy your best project — even a free Vercel link counts</text>
+  <circle cx="52" cy="784" r="8" fill="#1D9E75"/>
+  <text x="52" y="788" font-family="monospace" font-size="8" fill="#fff" text-anchor="middle">3</text>
+  <text x="68" y="788" font-family="monospace" font-size="10" fill="#e8e8e8">Contribute to 1 open source issue this month</text>
+  <circle cx="52" cy="808" r="8" fill="#1D9E75"/>
+  <text x="52" y="812" font-family="monospace" font-size="8" fill="#fff" text-anchor="middle">4</text>
+  <text x="68" y="812" font-family="monospace" font-size="10" fill="#e8e8e8">Archive or delete abandoned/tutorial repos</text>
+
+  <!-- Share Card -->
+  <rect x="28" y="840" width="584" height="196" fill="#0d0d0d" stroke="#1D9E75" stroke-width="2" rx="12"/>
+  <text x="48" y="866" font-family="monospace" font-size="8" fill="#5DCAA5" letter-spacing="0.15em" font-weight="700">GITHUB XRAY</text>
+  <text x="48" y="882" font-family="monospace" font-size="10" fill="#5F5E5A">github/<tspan fill="#5DCAA5">alexchen</tspan></text>
+  <text x="556" y="874" font-family="sans-serif" font-size="44" font-weight="800" fill="#5DCAA5" text-anchor="end" letter-spacing="-1">74</text>
+  <text x="556" y="890" font-family="monospace" font-size="12" fill="#5F5E5A" text-anchor="end">/100</text>
+  <!-- Tags -->
+  <rect x="48" y="896" width="130" height="18" fill="#085041" rx="4"/>
+  <text x="113" y="908" font-family="monospace" font-size="9" fill="#5DCAA5" text-anchor="middle" letter-spacing="0.04em">◆ Hackathon Builder</text>
+  <rect x="186" y="896" width="100" height="18" fill="#26215C" rx="4"/>
+  <text x="236" y="908" font-family="monospace" font-size="9" fill="#AFA9EC" text-anchor="middle">AI + Frontend</text>
+  <!-- Metrics -->
+  <rect x="48" y="922" width="172" height="52" fill="#161616" rx="6"/>
+  <text x="134" y="948" font-family="sans-serif" font-size="22" font-weight="800" fill="#EF9F27" text-anchor="middle">68</text>
+  <text x="134" y="964" font-family="monospace" font-size="8" fill="#5F5E5A" text-anchor="middle" letter-spacing="0.08em">CONSISTENCY</text>
+
+  <rect x="228" y="922" width="172" height="52" fill="#161616" rx="6"/>
+  <text x="314" y="948" font-family="sans-serif" font-size="22" font-weight="800" fill="#5DCAA5" text-anchor="middle">88</text>
+  <text x="314" y="964" font-family="monospace" font-size="8" fill="#5F5E5A" text-anchor="middle" letter-spacing="0.08em">PROFILE</text>
+
+  <rect x="408" y="922" width="172" height="52" fill="#161616" rx="6"/>
+  <text x="494" y="948" font-family="sans-serif" font-size="22" font-weight="800" fill="#E24B4A" text-anchor="middle">34</text>
+  <text x="494" y="964" font-family="monospace" font-size="8" fill="#5F5E5A" text-anchor="middle" letter-spacing="0.08em">OPEN SOURCE</text>
+
+  <!-- Share footer -->
+  <text x="48" y="998" font-family="monospace" font-size="9" fill="#5F5E5A">xray.github.io · Scan your profile free →</text>
+  <!-- Share buttons -->
+  <rect x="48" y="1012" width="178" height="16" fill="none" stroke="#0F6E56" stroke-width="1" rx="4"/>
+  <text x="137" y="1023" font-family="monospace" font-size="8" fill="#5DCAA5" text-anchor="middle">Share on LinkedIn</text>
+  <rect x="234" y="1012" width="140" height="16" fill="none" stroke="#0F6E56" stroke-width="1" rx="4"/>
+  <text x="304" y="1023" font-family="monospace" font-size="8" fill="#5DCAA5" text-anchor="middle">Post on X</text>
+  <rect x="382" y="1012" width="120" height="16" fill="none" stroke="#0F6E56" stroke-width="1" rx="4"/>
+  <text x="442" y="1023" font-family="monospace" font-size="8" fill="#5DCAA5" text-anchor="middle">Copy link</text>
+
+  <!-- Screen label -->
+  <rect x="20" y="1066" width="110" height="24" fill="#E24B4A" rx="6"/>
+  <text x="75" y="1082" font-family="monospace" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0.05em">SCREEN 3 / 3</text>
+  <text x="148" y="1082" font-family="monospace" font-size="10" fill="#5F5E5A">Results + Share Card</text>
+</svg>

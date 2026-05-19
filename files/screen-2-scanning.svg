@@ -1,0 +1,51 @@
+<svg viewBox="0 0 640 700" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <!-- Background -->
+  <rect width="640" height="700" fill="#0a0a0a" rx="16"/>
+  <rect x="1" y="1" width="638" height="698" fill="none" stroke="#2a2a2a" stroke-width="1" rx="16"/>
+
+  <!-- Nav -->
+  <rect x="0" y="0" width="640" height="56" fill="#0d0d0d" rx="16"/>
+  <rect x="0" y="40" width="640" height="16" fill="#0d0d0d"/>
+  <rect x="0" y="55" width="640" height="1" fill="#2a2a2a"/>
+  <text x="28" y="34" font-family="sans-serif" font-size="15" font-weight="800" fill="#5DCAA5">GitHub</text>
+  <text x="92" y="34" font-family="sans-serif" font-size="15" font-weight="800" fill="#888780">Xray</text>
+  <rect x="574" y="20" width="42" height="16" fill="#085041" rx="8"/>
+  <text x="595" y="31" font-family="monospace" font-size="8" fill="#5DCAA5" text-anchor="middle">Beta</text>
+
+  <!-- Scan box -->
+  <rect x="120" y="120" width="400" height="370" fill="#111" stroke="#333" stroke-width="1" rx="12"/>
+
+  <!-- Pulse dot + title -->
+  <circle cx="148" cy="156" r="5" fill="#1D9E75" opacity="0.9"/>
+  <text x="162" y="161" font-family="monospace" font-size="9" fill="#1D9E75" letter-spacing="0.15em">SCANNING PROFILE</text>
+
+  <!-- Scan lines - done -->
+  <text x="148" y="196" font-family="monospace" font-size="11" fill="#444">✓  Fetching GitHub profile data...</text>
+  <text x="148" y="218" font-family="monospace" font-size="11" fill="#444">✓  Analyzing 47 repositories...</text>
+  <text x="148" y="240" font-family="monospace" font-size="11" fill="#444">✓  Evaluating README quality...</text>
+  <text x="148" y="262" font-family="monospace" font-size="11" fill="#444">✓  Detecting tech stack...</text>
+
+  <!-- Current active line -->
+  <text x="148" y="284" font-family="monospace" font-size="11" fill="#5DCAA5">▶  Running LLM review engine...</text>
+
+  <!-- Pending lines -->
+  <text x="148" y="306" font-family="monospace" font-size="11" fill="#2a2a2a">○  Generating recruiter simulation...</text>
+  <text x="148" y="328" font-family="monospace" font-size="11" fill="#2a2a2a">○  Building your Xray card...</text>
+
+  <!-- Progress bar -->
+  <rect x="148" y="356" width="324" height="3" fill="#1f1f1f" rx="2"/>
+  <rect x="148" y="356" width="195" height="3" fill="#1D9E75" rx="2"/>
+
+  <!-- Username + cursor -->
+  <text x="148" y="388" font-family="monospace" font-size="11" fill="#5F5E5A">Scanning: </text>
+  <text x="224" y="388" font-family="monospace" font-size="11" fill="#5DCAA5">alexchen</text>
+  <rect x="296" y="376" width="7" height="14" fill="#1D9E75"/>
+
+  <!-- Percentage -->
+  <text x="444" y="388" font-family="monospace" font-size="11" fill="#5F5E5A" text-anchor="end">60%</text>
+
+  <!-- Screen label -->
+  <rect x="20" y="656" width="110" height="24" fill="#EF9F27" rx="6"/>
+  <text x="75" y="672" font-family="monospace" font-size="10" font-weight="700" fill="#0a0a0a" text-anchor="middle" letter-spacing="0.05em">SCREEN 2 / 3</text>
+  <text x="148" y="672" font-family="monospace" font-size="10" fill="#5F5E5A">Scanning State</text>
+</svg>
