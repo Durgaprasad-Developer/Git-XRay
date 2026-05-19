@@ -11,81 +11,77 @@ export class ScoringEngine {
     archetypeEmoji: string;
   } {
     console.log("[Scoring Engine] Computing scores based on extracted signals...");
+    // --- Deep Diagnostic Indices (Reevaluated Scoring Criteria) ---
+    // 1. Code Stewardship & Compliance Index (Professional structure: docs, readme, files quality)
+    const stewardshipIndex = Math.round(
+      signals.documentationScore * 0.4 +
+      signals.readmeQuality * 0.4 +
+      signals.professionalism * 0.2
+    );
+
+    // 2. Production Deployability Index (Config ready, live lockfiles & lock assets)
+    const deployabilityIndex = Math.round(
+      signals.deploymentScore * 0.6 +
+      Math.min(40, (signals.productionReadyProjects / Math.max(1, signals.totalRepos)) * 100)
+    );
+
+    // 3. Specialization Depth Index (Language mastery vs. scattered thinness)
+    let specDepth = 75; // base
+    if (signals.languages.length > 0 && signals.languages.length <= 3) {
+      specDepth += 15; // Focused stack
+    } else if (signals.languages.length > 5) {
+      specDepth -= Math.min(30, (signals.languages.length - 5) * 6); // Too scattered
+    }
+    if (signals.topLanguage && signals.primaryTechIdentity && 
+        signals.primaryTechIdentity.toLowerCase().includes(signals.topLanguage.toLowerCase())) {
+      specDepth += 10;
+    }
+    const specializationDepthIndex = Math.min(100, Math.max(0, specDepth));
+
+    // 4. Community Adoption & Collaboration Density
+    const communityAdoptionIndex = Math.min(100, Math.max(0,
+      signals.collaborativeProjects * 15 +
+      Math.min(55, signals.totalStars * 2.5) +
+      Math.min(15, signals.forkedFromOthers * 3)
+    ));
 
     // 1. Consistency Score
     let consistency = 30; // base score for active account
     if (signals.recentActivity) consistency += 30;
-    // ratio of active repos to analyzed repos (clamped to 10 max analyzed)
     const activeRatio = Math.min(1, signals.activeRepos / 5);
     consistency += Math.round(activeRatio * 30);
-    // account age factor
     consistency += Math.min(10, Math.round(signals.accountAge * 2));
     consistency = Math.min(100, Math.max(0, consistency));
 
     // 2. Project Quality Score
-    let projectQuality = 20; // base
-    projectQuality += Math.round((signals.readmeQuality / 100) * 35);
-    projectQuality += Math.round((signals.deploymentScore / 100) * 35);
-    if (signals.productionReadyProjects > 0) {
-      projectQuality += 10;
-    }
-    projectQuality = Math.min(100, Math.max(0, projectQuality));
+    const projectQuality = Math.min(100, Math.max(0, Math.round(
+      deployabilityIndex * 0.7 + stewardshipIndex * 0.3
+    )));
 
     // 3. Open Source Score
-    let openSource = 15; // base
-    // star counts
-    if (signals.totalStars > 100) openSource += 35;
-    else if (signals.totalStars > 20) openSource += 25;
-    else if (signals.totalStars > 5) openSource += 15;
-    else if (signals.totalStars > 0) openSource += 5;
-
-    // collaborative presence
-    if (signals.collaborativeProjects > 0) {
-      openSource += Math.min(25, signals.collaborativeProjects * 5);
-    }
-    // original repos presence
-    if (signals.originalRepos > 2) {
-      openSource += 15;
-    }
-    // contribution to other repos
-    if (signals.forkedFromOthers > 0) {
-      openSource += Math.min(10, signals.forkedFromOthers * 2);
-    }
-    openSource = Math.min(100, Math.max(0, openSource));
+    const openSource = Math.min(100, Math.max(0, Math.round(
+      communityAdoptionIndex * 0.7 + (signals.originalRepos > 2 ? 30 : 10)
+    )));
 
     // 4. Profile Branding Score
     let profileBranding = 20;
     if (signals.hasBio) profileBranding += 20;
     if (signals.hasPortfolio) profileBranding += 30;
     if (signals.hasAvatar) profileBranding += 15;
-    // follower count impact
     if (signals.followerCount > 50) profileBranding += 15;
     else if (signals.followerCount > 10) profileBranding += 10;
     else if (signals.followerCount > 0) profileBranding += 5;
     profileBranding = Math.min(100, Math.max(0, profileBranding));
 
     // 5. Technical Depth Score
-    let technicalDepth = 30; // base
-    // language diversity (but not too thin)
-    if (signals.languages.length >= 3) technicalDepth += 15;
-    else if (signals.languages.length > 0) technicalDepth += 10;
-
-    // documented & deployment factors
-    technicalDepth += Math.round((signals.readmeQuality / 100) * 20);
-    // production-ready projects count
-    technicalDepth += Math.min(25, signals.productionReadyProjects * 8);
-    // account age depth factor
-    technicalDepth += Math.min(10, Math.round(signals.accountAge * 1.5));
-    technicalDepth = Math.min(100, Math.max(0, technicalDepth));
+    const technicalDepth = Math.min(100, Math.max(0, Math.round(
+      specializationDepthIndex * 0.6 + stewardshipIndex * 0.4
+    )));
 
     // 6. Recruiter Ready Score
-    let recruiterReady = 20; // base
-    if (signals.hasBio) recruiterReady += 10;
-    if (signals.hasPortfolio) recruiterReady += 20;
-    // deployment and documentation are critical for recruiters
-    recruiterReady += Math.round((signals.deploymentScore / 100) * 25);
-    recruiterReady += Math.round((signals.readmeQuality / 100) * 25);
-    recruiterReady = Math.min(100, Math.max(0, recruiterReady));
+    const recruiterReady = Math.min(100, Math.max(0, Math.round(
+      deployabilityIndex * 0.4 + stewardshipIndex * 0.4 + (signals.hasPortfolio ? 20 : 0)
+    )));
 
     // 7. Overall Score (weighted dimensions)
     const overall = Math.round(
