@@ -68,7 +68,7 @@ export default function CandidatePage() {
   };
 
   return (
-    <div className="max-w-[660px] mx-auto px-5">
+    <div className={`${appState === "results" ? "max-w-[1240px]" : "max-w-[660px]"} mx-auto px-5 transition-all duration-300`}>
       <TopNav onNewScan={handleReset} showNewScan={appState === "results"} />
 
       {appState === "scanning" && (
