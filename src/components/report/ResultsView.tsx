@@ -297,7 +297,7 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
       </div>
 
       {/* Share Card */}
-      <ShareCard data={shareCard} username={profile.username} />
+      <ShareCard data={shareCard} username={profile.username} name={profile.name || profile.username} />
 
       {/* Scan again */}
       <button
