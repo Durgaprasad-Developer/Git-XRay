@@ -74,8 +74,8 @@ Expected JSON Schema:
 {
   "review": {
     "standard": "An honest, constructive, recruiter-style review (approx 80-120 words). Highlight their building patterns, what they do well, and where their profile lacks polish (e.g. documentation, deployment, or forks). Use <strong> tags on key insights.",
-    "brutal": "A funny, sharp, slightly sarcastic but highly accurate roast of their profile (approx 80-120 words). Call out half-baked repos, empty contribution periods, missing READMEs, or tutorial copies. Keep it lighthearted but deeply insightful.",
-    "recruiter": "A raw, behind-the-scenes recruiter screening lens (approx 80-120 words). Write this as if you are leaving feedback for a hiring manager. What tier candidate is this? Are they junior, mid, or senior? What is the verdict?"
+    "brutal": "A brutally funny, sharp, sarcastic developer profile roast formatted in premium styled HTML. It MUST strictly follow this exact template and populate candidate specific data:\n<div class=\"border border-[#3a0c0c] bg-[#1a0505] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4 text-[#E24B4A] shadow-[0_0_15px_rgba(226,75,74,0.1)]\">\n  <strong>🔥 DETECTED PROFILE SINS (ROAST MODE ACTIVE)</strong>\n  <div class=\"h-px bg-[#3a0c0c] my-2\"></div>\n  <strong>💀 TOXICITY RATING:</strong> <span class=\"font-extrabold text-[#ff4444]\">[EXTREME / CAUTION / LAUGHABLE based on scores]</span><br/>\n  <strong>📦 GRAVEYARD RATIO:</strong> <span class=\"font-extrabold\">[Percentage]% abandoned projects (inactive repos count / total repos)</span><br/>\n  <strong>🧩 DEVELOPER TROPE:</strong> [Humorous category: e.g. Tutorial copy-paster, Draft skeleton hoarder, README avoider]\n</div>\n\n<div class=\"grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans text-white\">\n  <div class=\"bg-[#1f0505] border border-[#560f0f] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#ff4444] font-extrabold tracking-wider uppercase mb-1\">📢 THE SHAME LOG</div>\n    <span class=\"text-[11.5px] text-[#e8e8e8] leading-normal\">- [Hilarious bullet 1 referencing candidate repo names e.g. 'Project X has been dead for 8 months']<br/>- [Hilarious bullet 2 about commit gaps or languages]</span>\n  </div>\n  <div class=\"bg-[#241300] border border-[#4d2900] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#EF9F27] font-extrabold tracking-wider uppercase mb-1\">💡 TOXIC RECOVERY STEPS</div>\n    <span class=\"text-[11.5px] text-[#e8e8e8] leading-normal\">- [Sarcastic but useful fix 1]<br/>- [Sarcastic but useful fix 2]</span>\n  </div>\n</div>\n\n<p class=\"text-[12.5px] text-[#e8e8e8] leading-relaxed pl-3 border-l-2 border-[#E24B4A] font-sans italic\">\n  \"[A highly witty, sharp, sarcastic summary of their profile footprint, mocking their tech stack or empty repos while remaining highly insightful (approx 70-100 words)]\"\n</p>",
+    "recruiter": "A raw, highly structured behind-the-scenes technical recruiter dossier scorecard formatted in premium styled HTML. It MUST strictly follow this exact template and populate candidate specific data:\n<div class=\"border border-[#242424] bg-[#141414] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4\">\n  <strong>📋 CANDIDATE REPORT DOSSIER</strong>\n  <div class=\"h-px bg-[#242424] my-2\"></div>\n  <strong>💼 HIRING VERDICT:</strong> <span class=\"text-[#5DCAA5] font-extrabold\">[STRONG PASS / PASS TO SCREEN / ARCHIVE based on Overall Score]</span><br/>\n  <strong>📊 COMPETENCY TIER:</strong> <span class=\"text-[#EF9F27] font-extrabold\">[SENIOR DEVELOPER / MID-LEVEL / JUNIOR / INTERN based on scores]</span><br/>\n  <strong>⚡ MARKET VALUE INDEX:</strong> [e.g. High Go/Rust Utility, Rising React Generalist, etc.]\n</div>\n\n<div class=\"grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans\">\n  <div class=\"bg-[#082a21] border border-[#0F6E56] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-1\">🟢 STRENGTHS (GREEN FLAGS)</div>\n    <span class=\"text-[11px] text-[#b8b8b0] leading-normal\">- [Highlight 1 e.g. High documentation stewardship]<br/>- [Highlight 2 e.g. production-ready deployments]</span>\n  </div>\n  <div class=\"bg-[#2a0808] border border-[#560f0f] rounded-lg p-3\">\n    <div class=\"text-[9px] text-[#E24B4A] font-extrabold tracking-wider uppercase mb-1\">🔴 LIABILITIES (RED FLAGS)</div>\n    <span class=\"text-[11px] text-[#b8b8b0] leading-normal\">- [Highlight 1 e.g. empty contribution periods]<br/>- [Highlight 2 e.g. tutorial-copied templates]</span>\n  </div>\n</div>\n\n<p class=\"text-[12.5px] text-[#b8b8b0] leading-relaxed pl-3 border-l-2 border-[#1D9E75] font-sans\">\n  [A highly customized Silicon Valley recruiter's executive summary evaluating the candidate's actual projects, code stewardship, active vs stale repos, and language density. Keep this commentary deeply analytical, specific to their repo names, and realistic (approx 60-90 words)]\n</p>"
   },
   "recruiterImpression": [
     { "sentiment": "positive", "text": "First 15-second visual impression positive signal." },
@@ -114,8 +114,54 @@ Ensure all lists and impressions directly reference the candidate's technologies
       return {
         review: {
           standard: `You clearly love building with <strong>${signals.topLanguage}</strong>. Your account age shows you have been active for <strong>${signals.accountAge} years</strong>. However, your profile could benefit from higher deployment rates and structured documentation.`,
-          brutal: `A profile active for ${signals.accountAge} years and the main highlight is still a repository with no deployment? Let's get to work and deploy those projects instead of leaving them as graveyards.`,
-          recruiter: `Candidate has decent exposure to ${signals.topLanguage}. Lacks open source collaboration presence. Standard review complete.`,
+          brutal: `
+<div class="border border-[#3a0c0c] bg-[#1a0505] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4 text-[#E24B4A] shadow-[0_0_15px_rgba(226,75,74,0.1)]">
+  <strong>🔥 DETECTED PROFILE SINS (ROAST MODE ACTIVE)</strong>
+  <div class="h-px bg-[#3a0c0c] my-2"></div>
+  <strong>💀 TOXICITY RATING:</strong> <span class="font-extrabold text-[#ff4444]">EXTREME</span><br/>
+  <strong>📦 GRAVEYARD RATIO:</strong> <span class="font-extrabold">${Math.round((signals.inactiveRepos / Math.max(1, signals.totalRepos)) * 100)}%</span> abandoned projects<br/>
+  <strong>🧩 DEVELOPER TROPE:</strong> The MVP Gravedigger
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans text-white">
+  <div class="bg-[#1f0505] border border-[#560f0f] rounded-lg p-3">
+    <div class="text-[9px] text-[#ff4444] font-extrabold tracking-wider uppercase mb-1">📢 THE SHAME LOG</div>
+    <span class="text-[11.5px] text-[#e8e8e8] leading-normal">- Active for ${signals.accountAge} years yet most repos lack readme files<br/>- ${signals.inactiveRepos} repositories currently acting as draft skeleton graveyards</span>
+  </div>
+  <div class="bg-[#241300] border border-[#4d2900] rounded-lg p-3">
+    <div class="text-[9px] text-[#EF9F27] font-extrabold tracking-wider uppercase mb-1">💡 TOXIC RECOVERY STEPS</div>
+    <span class="text-[11.5px] text-[#e8e8e8] leading-normal">- Write more than a single "Initial Commit" message<br/>- Actually deploy something instead of leaving draft skeletons</span>
+  </div>
+</div>
+
+<p class="text-[12.5px] text-[#e8e8e8] leading-relaxed pl-3 border-l-2 border-[#E24B4A] font-sans italic">
+  "This profile is an absolute cemetery of good intentions. You clearly love starting new repositories in <strong>${signals.topLanguage}</strong> only to abandon them three commits later when the microservices architectural planning gets slightly boring. Clean up your folder structure before a compiler gets offended."
+</p>
+          `.trim(),
+          recruiter: `
+<div class="border border-[#242424] bg-[#141414] rounded-lg p-4 font-mono text-[11px] leading-relaxed mb-4">
+  <strong>📋 CANDIDATE REPORT DOSSIER</strong>
+  <div class="h-px bg-[#242424] my-2"></div>
+  <strong>💼 HIRING VERDICT:</strong> <span class="text-[#5DCAA5] font-extrabold">PASS TO SCREEN</span><br/>
+  <strong>📊 COMPETENCY TIER:</strong> <span class="text-[#EF9F27] font-extrabold">MID-LEVEL BUILDER</span><br/>
+  <strong>⚡ MARKET VALUE INDEX:</strong> High ${signals.topLanguage || "Full Stack"} Stack Parity
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 font-sans">
+  <div class="bg-[#082a21] border border-[#0F6E56] rounded-lg p-3">
+    <div class="text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-1">🟢 STRENGTHS (GREEN FLAGS)</div>
+    <span class="text-[11px] text-[#b8b8b0] leading-normal">- Consistent footprint in ${signals.topLanguage || "primary stack"}<br/>- High active building index</span>
+  </div>
+  <div class="bg-[#2a0808] border border-[#560f0f] rounded-lg p-3">
+    <div class="text-[9px] text-[#E24B4A] font-extrabold tracking-wider uppercase mb-1">🔴 LIABILITIES (RED FLAGS)</div>
+    <span class="text-[11px] text-[#b8b8b0] leading-normal">- Documentation could be deeper<br/>- Limited open source contributions</span>
+  </div>
+</div>
+
+<p class="text-[12.5px] text-[#b8b8b0] leading-relaxed pl-3 border-l-2 border-[#1D9E75] font-sans">
+  Candidate displays a <strong>solid architectural foundation</strong> in <strong>${signals.topLanguage || "their primary language"}</strong> across <strong>${signals.accountAge} years</strong>. The profile shows strong MVP building velocity but could improve direct production deployability coverage to stand out to senior hiring committees.
+</p>
+          `.trim(),
         },
         recruiterImpression: [
           { sentiment: "positive", text: `Demonstrates basic consistency in ${signals.topLanguage}.` },
