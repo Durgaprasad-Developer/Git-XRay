@@ -360,17 +360,19 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                       </button>
                     </div>
 
-                    {/* GitHub README Bio */}
-                    <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
-                      <div className="text-[8px] text-[#a0a09a] font-extrabold uppercase tracking-wider mb-1 font-mono">GitHub Profile Bio</div>
-                      <p className="text-[12px] text-[#ebebeb] pr-12 font-medium">{headlines.githubReadme}</p>
-                      <button
-                        onClick={() => handleCopy(headlines.githubReadme, "github")}
-                        className="absolute right-3 top-3 px-2 py-1 bg-[#242424] border border-[#2e2e2e] rounded text-[9px] text-[#5DCAA5] hover:border-[#1D9E75] font-mono transition-colors"
-                      >
-                        {copiedKey === "github" ? "Copied!" : "Copy"}
-                      </button>
-                    </div>
+                     {/* GitHub README Bio */}
+                     <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
+                       <div className="text-[8px] text-[#a0a09a] font-extrabold uppercase tracking-wider mb-2 font-mono">GitHub Profile Bio</div>
+                       <pre className="text-[11.5px] text-[#ebebeb] pr-12 font-mono whitespace-pre-wrap bg-[#101010]/30 p-2.5 rounded border border-[#242424]/40 select-all overflow-x-auto leading-relaxed">
+                         {headlines.githubReadme}
+                       </pre>
+                       <button
+                         onClick={() => handleCopy(headlines.githubReadme, "github")}
+                         className="absolute right-3 top-3 px-2 py-1 bg-[#242424] border border-[#2e2e2e] rounded text-[9px] text-[#5DCAA5] hover:border-[#1D9E75] font-mono transition-colors"
+                       >
+                         {copiedKey === "github" ? "Copied!" : "Copy"}
+                       </button>
+                     </div>
 
                     {/* Custom Shield Badge Markdown */}
                     <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3 relative">
