@@ -13,6 +13,7 @@ import ShareCard from "./ShareCard";
 interface ResultsViewProps {
   report: AnalysisReport;
   onReset: () => void;
+  onRefresh?: () => void;
 }
 
 type ReviewMode = "standard" | "brutal" | "recruiter";
@@ -29,7 +30,7 @@ function scoreBg(score: number): string {
   return "#E24B4A";
 }
 
-export default function ResultsView({ report, onReset }: ResultsViewProps) {
+export default function ResultsView({ report, onReset, onRefresh }: ResultsViewProps) {
   const [reviewMode, setReviewMode] = useState<ReviewMode>("standard");
   const [barsAnimated, setBarsAnimated] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -92,7 +93,12 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
           {/* Score Hero */}
           <div className="bg-[#181818] border border-[#2e2e2e] rounded-[14px] p-7 grid gap-6 items-center"
             style={{ gridTemplateColumns: "160px 1fr" }}>
-            <ScoreGauge score={scores.overall} />
+            <div className="flex flex-col items-center">
+              <ScoreGauge score={scores.overall} />
+              <p className="text-[9px] text-[#a0a09a] font-sans font-medium text-center mt-3 max-w-[160px] leading-normal italic opacity-85">
+                ⚠️ Scores reflect recruiter-facing GitHub footprint, not engineering influence or historical impact.
+              </p>
+            </div>
             <div>
               <div className="flex items-center gap-[10px] mb-[10px]">
                 <span className="inline-flex items-center gap-[6px] bg-[#085041] text-[#5DCAA5] text-[11px] font-bold px-[13px] py-[6px] rounded-full border border-[#0F6E56] tracking-[0.04em]">
@@ -478,14 +484,28 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                 <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
                 🎯 Hiring Position Match
               </div>
-              <div className="text-[9px] text-[#787672] mb-2 uppercase tracking-[0.08em] font-mono">Best Suited Roles</div>
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {positionMatch.bestSuitedRoles.map((role, i) => (
-                  <span key={i} className="text-[10.5px] font-mono px-2.5 py-1 rounded bg-[#082a21] text-[#5DCAA5] border border-[#0F6E56]/40 font-bold">
-                    🛡️ {role}
-                  </span>
-                ))}
+              <div className="text-[9px] text-[#787672] mb-3 uppercase tracking-[0.08em] font-mono">Confidence Fit Analysis</div>
+              
+              <div className="flex flex-col gap-2.5 mb-4">
+                {/* High Confidence */}
+                <div className="flex items-center justify-between gap-4 p-2 bg-[#082a21]/20 border border-[#0F6E56]/30 rounded-lg">
+                  <span className="text-[8px] font-mono font-extrabold px-2 py-0.5 rounded bg-[#082a21] text-[#5DCAA5] border border-[#0F6E56]/50 tracking-[0.06em]">HIGH</span>
+                  <span className="text-[11.5px] text-[#ebebeb] font-mono font-bold text-right">{positionMatch.highConfidenceMatch}</span>
+                </div>
+
+                {/* Medium Confidence */}
+                <div className="flex items-center justify-between gap-4 p-2 bg-[#2a1a08]/20 border border-[#4d320c]/30 rounded-lg">
+                  <span className="text-[8px] font-mono font-extrabold px-2 py-0.5 rounded bg-[#2a1a08] text-[#EF9F27] border border-[#4d320c]/50 tracking-[0.06em]">MEDIUM</span>
+                  <span className="text-[11.5px] text-[#ebebeb] font-mono font-bold text-right">{positionMatch.mediumConfidenceMatch}</span>
+                </div>
+
+                {/* Low Confidence */}
+                <div className="flex items-center justify-between gap-4 p-2 bg-[#1a0808]/20 border border-[#4d0c0c]/30 rounded-lg">
+                  <span className="text-[8px] font-mono font-extrabold px-2 py-0.5 rounded bg-[#1a0808] text-[#E24B4A] border border-[#4d0c0c]/50 tracking-[0.06em]">LOW</span>
+                  <span className="text-[11.5px] text-[#ebebeb] font-mono font-bold text-right">{positionMatch.lowConfidenceMatch}</span>
+                </div>
               </div>
+
               <div className="bg-[#181818] border border-[#242424] rounded-lg p-3">
                 <div className="text-[9px] text-[#a0a09a] font-extrabold tracking-wider uppercase mb-1 font-mono">💼 Recruiter Appeal Factor</div>
                 <p className="text-[11.5px] text-[#ebebeb] leading-relaxed italic whitespace-pre-line">
@@ -499,14 +519,23 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
 
       </div>
 
-      {/* Scan again button spanning full container width */}
-      <button
-        id="scan-again-btn"
-        onClick={onReset}
-        className="block w-full mt-6 h-[42px] rounded-[10px] border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[11px] cursor-pointer transition-all hover:border-[#0F6E56] hover:text-[#5DCAA5]"
-      >
-        ← Scan another profile
-      </button>
+      {/* Bottom Actions Row */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-7 w-full">
+        <button
+          onClick={onReset}
+          className="flex-1 h-[44px] rounded-[10px] border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[11px] cursor-pointer transition-all hover:border-[#333] hover:text-[#ebebeb]"
+        >
+          ← Scan another profile
+        </button>
+        {onRefresh && (
+          <button
+            onClick={onRefresh}
+            className="flex-[2] h-[44px] rounded-[10px] bg-[#085041] border border-[#0F6E56] text-[#5DCAA5] font-mono text-[11px] font-bold cursor-pointer transition-all hover:bg-[#0c6b53] hover:shadow-[0_0_20px_rgba(93,202,165,0.15)] flex items-center justify-center gap-2"
+          >
+            🔄 Re-Scan Profile After Fixes (Clear Cache)
+          </button>
+        )}
+      </div>
     </section>
   );
 }

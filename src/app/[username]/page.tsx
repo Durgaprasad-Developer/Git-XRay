@@ -67,6 +67,37 @@ export default function CandidatePage() {
     router.push("/");
   };
 
+  const handleRefresh = async () => {
+    setAppState("scanning");
+    try {
+      trackEvent("profile_refresh_started", { username });
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, force: true }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Analysis failed");
+      }
+
+      const data: AnalysisReport = await response.json();
+      setReport(data);
+      setAppState("results");
+      trackEvent("profile_refresh_success", {
+        username,
+        score: data.scores.overall,
+        archetype: data.archetype,
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      console.error(`[Candidate Page] Refresh error for ${username}:`, err);
+      trackEvent("profile_refresh_failed", { username, error: message });
+      setAppState("results");
+    }
+  };
+
   return (
     <div className={`${appState === "results" ? "max-w-[1240px]" : "max-w-[660px]"} mx-auto px-5 transition-all duration-300`}>
       <TopNav onNewScan={handleReset} showNewScan={appState === "results"} />
@@ -76,7 +107,7 @@ export default function CandidatePage() {
       )}
 
       {appState === "results" && report && (
-        <ResultsView report={report} onReset={handleReset} />
+        <ResultsView report={report} onReset={handleReset} onRefresh={handleRefresh} />
       )}
     </div>
   );

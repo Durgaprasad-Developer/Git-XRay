@@ -113,11 +113,9 @@ Expected JSON Schema:
     ]
   },
   "positionMatch": {
-    "bestSuitedRoles": [
-      "Role 1 (e.g. 'Full Stack Intern')",
-      "Role 2 (e.g. 'MVP Prototype Builder')",
-      "Role 3 (e.g. 'AI Hackathon Specialist')"
-    ],
+    "highConfidenceMatch": "A specific modern high-confidence career-role fit based on their projects (e.g., 'Open Source Tooling Engineer' or 'Early-Stage AI MVP Builder')",
+    "mediumConfidenceMatch": "A specific modern medium-confidence role fit (e.g., 'Frontend Platform Developer' or 'Full Stack Intern')",
+    "lowConfidenceMatch": "A specific modern low-confidence role fit representing less suitable paths (e.g., 'Enterprise Java Architect' or 'High-Frequency Trading Engineer')",
     "recruiterAppealFactor": "A one-sentence explanation of what makes this candidate appealing for those roles, e.g. 'Highly suited for fast-paced agile product delivery and rapid MVP iteration.'"
   },
   "headlines": {
@@ -233,11 +231,9 @@ Ensure all lists and impressions directly reference the candidate's technologies
           ]
         },
         positionMatch: {
-          bestSuitedRoles: [
-            `${signals.topLanguage || "Full Stack"} Developer`,
-            "Agile MVP Builder",
-            "General Software Engineer"
-          ],
+          highConfidenceMatch: `${signals.topLanguage || "Full Stack"} Specialist (MVP Builder)`,
+          mediumConfidenceMatch: "Frontend Platform Engineer",
+          lowConfidenceMatch: "Enterprise Systems Architect",
           recruiterAppealFactor: `Displays strong practical building velocity in ${signals.topLanguage} suitable for fast execution.`
         },
         headlines: {

@@ -30,7 +30,9 @@ export interface ScoreExplainabilityData {
 }
 
 export interface HiringPositionMatchData {
-  bestSuitedRoles: string[];
+  highConfidenceMatch: string;
+  mediumConfidenceMatch: string;
+  lowConfidenceMatch: string;
   recruiterAppealFactor: string;
 }
 
