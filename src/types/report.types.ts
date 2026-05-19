@@ -9,6 +9,22 @@ export interface AnalysisReport {
   review: ReviewData;
   improvements: string[];
   shareCard: ShareCardData;
+  headlines?: HeadlineData;
+  highestImpactFix?: HighestImpactFixData;
+}
+
+export interface HighestImpactFixData {
+  title: string;
+  diagnosis: string;
+  whyItMatters: string;
+  exactFix: string;
+  expectedImpact: string;
+}
+
+export interface HeadlineData {
+  linkedin: string;
+  githubReadme: string;
+  twitter: string;
 }
 
 export interface ProfileData {

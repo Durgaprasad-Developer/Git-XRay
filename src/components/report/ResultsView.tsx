@@ -32,21 +32,27 @@ function scoreBg(score: number): string {
 export default function ResultsView({ report, onReset }: ResultsViewProps) {
   const [reviewMode, setReviewMode] = useState<ReviewMode>("standard");
   const [barsAnimated, setBarsAnimated] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [showAllRepos, setShowAllRepos] = useState(false);
+
+  const handleCopy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+    trackEvent("headline_copied", { type: key, username: report.profile.username });
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setBarsAnimated(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard } = report;
+  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard, headlines, highestImpactFix } = report;
 
   const subscores = [
-    { label: "Consistency", value: scores.consistency },
+    { label: "Overall Score", value: scores.overall },
+    { label: "Recruiter Readiness", value: scores.recruiterReady },
     { label: "Project Quality", value: scores.projectQuality },
-    { label: "Open Source", value: scores.openSource },
-    { label: "Profile Branding", value: scores.profileBranding },
-    { label: "Technical Depth", value: scores.technicalDepth },
-    { label: "Recruiter Ready", value: scores.recruiterReady },
   ];
 
   const reviewContent = {
@@ -96,8 +102,12 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
               <div className="inline-block mb-[10px] text-[10px] text-[#EF9F27] bg-[#1a1200] border border-[#3a2a00] px-[11px] py-[5px] rounded-full">
                 Top {profile.percentile}% of developers
               </div>
-              <p className="text-[13px] text-[#b8b8b0] leading-[1.7] mb-3">
-                {stripHtml(review.standard).slice(0, 130)}…
+              <p className="text-[13.5px] text-[#ebebeb] font-bold leading-[1.6] mb-3 font-sans">
+                💡 {(() => {
+                  const cleaned = stripHtml(review.standard).trim();
+                  const firstSentence = cleaned.split(".")[0];
+                  return firstSentence ? `${firstSentence}.` : cleaned;
+                })()}
               </p>
               {/* vs bar */}
               <div className="bg-[#1f1f1f] rounded-md px-3 py-[10px]">
@@ -120,6 +130,70 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Hero centerpiece: Highest Impact Career Blocker Fix */}
+          {highestImpactFix && (
+            <div className="bg-[#181102] border border-[#d4af37]/30 rounded-[12px] p-5 shadow-[0_0_20px_rgba(212,175,55,0.05)] mb-1">
+              <div className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#EF9F27] mb-3 flex items-center gap-2">
+                <span className="inline-block w-[3.5px] h-[12px] bg-[#EF9F27] rounded-[2px]" />
+                ⚡ HIGH PRIORITY CAREER BLOCKER
+              </div>
+              <h3 className="text-[17px] font-extrabold text-[#ebebeb] mb-3 font-sans leading-snug">
+                {highestImpactFix.title}
+              </h3>
+              
+              <div className="grid gap-3 font-sans">
+                <div className="bg-[#241a04] rounded-lg p-3 border border-[#d4af37]/10">
+                  <div className="text-[9px] text-[#EF9F27] font-extrabold tracking-wider uppercase mb-1">🚨 Diagnosis</div>
+                  <p className="text-[12px] text-[#ebebeb] leading-normal font-medium">{highestImpactFix.diagnosis}</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="bg-[#121212] border border-[#242424] rounded-lg p-3">
+                    <div className="text-[9px] text-[#a0a09a] font-extrabold tracking-wider uppercase mb-1">❓ Why It Matters</div>
+                    <p className="text-[11px] text-[#b8b8b0] leading-relaxed">{highestImpactFix.whyItMatters}</p>
+                  </div>
+                  <div className="bg-[#121212] border border-[#242424] rounded-lg p-3">
+                    <div className="text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-1">🎯 Expected Impact</div>
+                    <p className="text-[11px] text-[#b8b8b0] leading-relaxed">{highestImpactFix.expectedImpact}</p>
+                  </div>
+                </div>
+
+                <div className="bg-[#0b261c] rounded-lg p-3 border border-[#0F6E56]/20 mt-1">
+                  <div className="text-[9px] text-[#5DCAA5] font-extrabold tracking-wider uppercase mb-2 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#5DCAA5]" />
+                    🛠️ Exact Fix Instructions
+                  </div>
+                  <p className="text-[11.5px] text-[#ebebeb] leading-relaxed whitespace-pre-line font-mono bg-[#071912] p-3 rounded border border-[#0F6E56]/10">
+                    {highestImpactFix.exactFix}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Top Actionable Improvements */}
+          <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5 shadow-[0_0_20px_rgba(93,202,165,0.02)]">
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
+              📋 Actionable Improvements List
+            </div>
+            <p className="text-[12px] text-[#787672] mb-4 leading-normal">
+              Execute these customized steps to significantly optimize your developer profile branding and score.
+            </p>
+            <ul className="flex flex-col gap-3 list-none">
+              {improvements.map((item, i) => (
+                <li key={i} className="flex items-start gap-[12px] px-3.5 py-3 bg-[#181818] border border-[#242424] hover:border-[#1D9E75]/30 rounded-lg text-[13px] text-[#ebebeb] leading-[1.6] transition-all">
+                  <span className="w-5 h-5 rounded-full bg-[#1D9E75] text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0 mt-[2px]">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1">
+                    {item}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Mode row & Review Section */}
@@ -171,7 +245,7 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
               Top Projects Analyzed
             </div>
             <div className="flex flex-col gap-2">
-              {topRepositories.map((repo) => (
+              {(showAllRepos ? topRepositories : topRepositories.slice(0, 3)).map((repo) => (
                 <div
                   key={repo.name}
                   className="grid gap-2 px-3 py-[10px] bg-[#181818] rounded-lg items-start"
@@ -203,6 +277,14 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                 </div>
               ))}
             </div>
+            {topRepositories.length > 3 && (
+              <button
+                onClick={() => setShowAllRepos(!showAllRepos)}
+                className="w-full h-[36px] rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] cursor-pointer hover:border-[#1D9E75] hover:text-[#5DCAA5] transition-colors mt-3"
+              >
+                {showAllRepos ? "Collapse List" : `Show all ${topRepositories.length} analyzed repositories`}
+              </button>
+            )}
           </div>
 
           {/* Share Card (Poster Cards) */}
@@ -215,8 +297,8 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
           
           {/* Subscores Grid */}
           <div className="grid grid-cols-2 gap-2">
-            {subscores.map(({ label, value }) => (
-              <div key={label} className="bg-[#101010] border border-[#242424] rounded-[10px] p-[14px_14px_12px]">
+            {subscores.map(({ label, value }, idx) => (
+              <div key={label} className={`bg-[#101010] border border-[#242424] rounded-[10px] p-[14px_14px_12px] ${idx === 0 ? "col-span-2 bg-gradient-to-r from-[#101010] to-[#141414]" : ""}`}>
                 <div className="text-[8px] text-[#787672] uppercase tracking-[0.12em] mb-[7px]">{label}</div>
                 <div
                   className="font-display text-[24px] font-extrabold leading-none mb-[7px]"
@@ -275,23 +357,6 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
             </div>
           </div>
 
-          {/* Improvements */}
-          <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
-            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-4 flex items-center gap-2">
-              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
-              Top Improvements · Highest Impact First
-            </div>
-            <ul className="flex flex-col gap-[6px] list-none">
-              {improvements.map((item, i) => (
-                <li key={i} className="flex items-start gap-[11px] px-3 py-[10px] bg-[#181818] rounded-lg text-[12.5px] text-[#ebebeb] leading-[1.5]">
-                  <span className="w-[21px] h-[21px] rounded-full bg-[#1D9E75] text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-[1px]">
-                    {i + 1}
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
 
           {/* Tech Stack */}
           <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">

@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     // 4. AI Review Engine
     console.log("[API Analyze] 4/4 - Invoking Gemini Recruiter Engine");
-    const { review, recruiterImpression, improvements } = await GeminiService.generateReview(
+    const { review, recruiterImpression, improvements, highestImpactFix } = await GeminiService.generateReview(
       cleanUsername,
       signals,
       scores,
@@ -135,6 +135,7 @@ export async function POST(req: NextRequest) {
         profileScore: scores.profileBranding,
         openSourceScore: scores.openSource,
       },
+      highestImpactFix,
     };
 
     // Cache the completed report for future fast lookups

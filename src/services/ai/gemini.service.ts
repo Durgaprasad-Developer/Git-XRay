@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { DeveloperSignals } from "@/types/signals.types";
-import { ScoreData, RecruiterImpression, ReviewData } from "@/types/report.types";
+import { ScoreData, RecruiterImpression, ReviewData, HighestImpactFixData } from "@/types/report.types";
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
@@ -32,6 +32,7 @@ export class GeminiService {
     review: ReviewData;
     recruiterImpression: RecruiterImpression[];
     improvements: string[];
+    highestImpactFix?: HighestImpactFixData;
   }> {
     console.log("[AI Engine] Generating recruiter review for:", username);
 
@@ -89,7 +90,14 @@ Expected JSON Schema:
     "Specific high-impact actionable recommendation 3",
     "Specific high-impact actionable recommendation 4",
     "Specific high-impact actionable recommendation 5"
-  ]
+  ],
+  "highestImpactFix": {
+    "title": "A highly-attention grabbing title for the highest impact blocker fix (e.g. 'Deploy Your Core MVP' or 'Standardize Repository Documentation')",
+    "diagnosis": "A concise explanation of the single most limiting issue in their developer profile footprint.",
+    "whyItMatters": "Why this single issue damages recruiter screening rates (e.g., 'Recruiters reject candidates with zero live links in less than 6 seconds.').",
+    "exactFix": "Explicit, actionable step-by-step developer guide to solve this exact issue (e.g., '1. Go to Vercel/Netlify. 2. Link repository X. 3. Insert live URL inside your GitHub project description field.').",
+    "expectedImpact": "Explain the clear outcome, detailing the recruiter confidence multiplier if this fix is implemented."
+  }
 }
 
 Ensure all lists and impressions directly reference the candidate's technologies, languages, and repo names rather than generic advice.
@@ -107,6 +115,7 @@ Ensure all lists and impressions directly reference the candidate's technologies
         review: data.review,
         recruiterImpression: data.recruiterImpression,
         improvements: data.improvements,
+        highestImpactFix: data.highestImpactFix,
       };
     } catch (error) {
       console.error("[AI Engine Error] Failed to generate AI review:", error);
@@ -174,6 +183,13 @@ Ensure all lists and impressions directly reference the candidate's technologies
           "Pin your highest-quality original repositories to clear up clutter",
           "Add structured setup and installation instructions to your documentation",
         ],
+        highestImpactFix: {
+          title: "Deploy Your Primary Projects",
+          diagnosis: `Your repositories lack visible, active deployment links despite having consistent building blocks in ${signals.topLanguage || "Web Stack"}.`,
+          whyItMatters: "Recruiters and hiring managers spend an average of 15 seconds on a profile. Without clickable live links, they assume the project is a dead mock skeleton.",
+          exactFix: `1. Import your top repository ${topRepos[0]?.name || "your primary project"} into Vercel, Netlify, or Github Pages.\n2. Verify the production build compiles correctly.\n3. Add the live URL directly inside your repository description and README.`,
+          expectedImpact: "HIGH. Dramatically increases recruiter review duration and guarantees passing initial code validation screens."
+        }
       };
     }
   }
