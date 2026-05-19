@@ -25,99 +25,123 @@ interface ProfileThemeData {
 }
 
 interface CardCustomizations {
-  accentColor: string;      // glowing neon highlight (violet, cyan, orange, or green)
-  bgColor: string;          // deep matching background color
-  themeTag: string;         // tech-fest classification tag
-  gradientBloom: string;    // dynamic mesh gradient background for CyberGlow
-  cyberAccent: string;      // secondary complementary accent color
+  accentColor: string;      // main highlight color (neon violet, prismatic teal, amber, etc.)
+  bgColor: string;          // matching theme background
+  themeTag: string;         // formatted vibe label with emoji
+  gradientBloom: string;    // dynamic mesh glow for Cyber-Glow ticket
+  cyberAccent: string;      // secondary complementary neon color
 }
 
 /**
- * Dynamic brand customization engine based on developer's tech identity / archetype.
- * Customizes styling in real-time so that AI/ML developers, Frontend developers, 
- * and Systems developers receive unique, highly personalized cards.
+ * Custom developer merit badges generated dynamically based on actual stats.
+ */
+function getDeveloperStatsBadges(data: ShareCardData): string[] {
+  const badges: string[] = [];
+  
+  // 1. Archetype (e.g. "🤖 AI / ML Explorer", "🌐 Open Source Explorer")
+  badges.push(data.archetype);
+
+  // 2. Tech Stack Identity (e.g. "💻 JavaScript Specialist")
+  if (data.techIdentity) {
+    badges.push(`💻 ${data.techIdentity}`);
+  }
+
+  // 3. Dynamic Merit Tag based on actual statistics
+  if (data.score >= 80) {
+    badges.push("🏆 ELITE CODER");
+  } else if (data.score >= 60) {
+    badges.push("✨ PRO LEVEL");
+  } else {
+    badges.push("⚡ BUILDER CORE");
+  }
+
+  if (data.consistencyScore >= 75) {
+    badges.push("🔥 COMMIT BEAST");
+  } else if (data.openSourceScore >= 60) {
+    badges.push("🤝 OSS CONTRIBUTOR");
+  } else if (data.profileScore >= 70) {
+    badges.push("🎨 BRAND MASTER");
+  }
+
+  return badges.slice(0, 3); // Fit beautifully on card rows!
+}
+
+/**
+ * Dynamic brand customization engine based on developer's archetype and vibing stats.
  */
 function getDynamicCustomizations(archetype: string, techIdentity: string): CardCustomizations {
-  const archLower = archetype.toLowerCase();
-  const techLower = techIdentity.toLowerCase();
+  const arch = archetype || "";
+  const tech = techIdentity || "";
+  const archLower = arch.toLowerCase();
+  const techLower = tech.toLowerCase();
 
-  // 1. AI / ML Guy
-  if (
-    archLower.includes("ai") || 
-    archLower.includes("ml") || 
-    archLower.includes("machine") || 
-    archLower.includes("deep learning") ||
-    techLower.includes("python") ||
-    techLower.includes("ai") ||
-    techLower.includes("ml")
-  ) {
+  // 1. AI / ML Explorer (🤖)
+  if (archLower.includes("ai") || archLower.includes("ml") || archLower.includes("machine") || archLower.includes("learning")) {
     return {
       accentColor: "#a855f7", // neural violet
-      bgColor: "#0b0414",
-      themeTag: "[NEURAL_ENGINE_V2]",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(192,38,211,0.12) 0%, transparent 60%)",
+      bgColor: "#090312",
+      themeTag: "🤖 AI / ML VIBE",
+      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(192,38,211,0.15) 0%, transparent 60%)",
       cyberAccent: "#e879f9",
     };
   }
 
-  // 2. Frontend / React / UI Specialist
-  if (
-    archLower.includes("frontend") || 
-    archLower.includes("ui") || 
-    archLower.includes("ux") || 
-    archLower.includes("design") ||
-    techLower.includes("react") ||
-    techLower.includes("javascript") ||
-    techLower.includes("typescript") ||
-    techLower.includes("css") ||
-    techLower.includes("html")
-  ) {
+  // 2. Open Source Explorer (🌐) - Prismatic Rainbow Theme
+  if (archLower.includes("open source") || archLower.includes("oss") || archLower.includes("explorer")) {
     return {
-      accentColor: "#06b6d4", // electric cyan
-      bgColor: "#020d10",
-      themeTag: "[PIXEL_PERFECT_UI]",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(6,182,212,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(20,184,166,0.12) 0%, transparent 60%)",
-      cyberAccent: "#2dd4bf",
+      accentColor: "#00e5ff", // prismatic cyan
+      bgColor: "#040b14",
+      themeTag: "🌐 OSS GLOBAL VIBE",
+      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(0,229,255,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(255,0,160,0.18) 0%, transparent 60%)",
+      cyberAccent: "#ff00a0",
     };
   }
 
-  // 3. Backend / Systems / Cloud Architect
-  if (
-    archLower.includes("backend") || 
-    archLower.includes("systems") || 
-    archLower.includes("cloud") || 
-    archLower.includes("database") ||
-    archLower.includes("devops") ||
-    techLower.includes("go") ||
-    techLower.includes("rust") ||
-    techLower.includes("docker") ||
-    techLower.includes("kubernetes") ||
-    techLower.includes("c++") ||
-    techLower.includes("java")
-  ) {
+  // 3. Hackathon Builder (⚡) - Volt Cyber Theme
+  if (archLower.includes("hackathon") || archLower.includes("builder")) {
     return {
-      accentColor: "#f97316", // systems rust / bronze orange
-      bgColor: "#130903",
-      themeTag: "[SYSTEMS_ARCH_V4]",
-      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(249,115,22,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(220,38,38,0.12) 0%, transparent 60%)",
-      cyberAccent: "#facc15",
+      accentColor: "#facc15", // volt amber
+      bgColor: "#0f0d02",
+      themeTag: "⚡ VOLT CYBER VIBE",
+      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(250,204,21,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(239,68,68,0.15) 0%, transparent 60%)",
+      cyberAccent: "#ef4444",
     };
   }
 
-  // 4. Default / Polyglot / General Developer
+  // 4. Frontend Craftsman (🎨) - Neon Aqua Theme
+  if (archLower.includes("frontend") || archLower.includes("craftsman")) {
+    return {
+      accentColor: "#38bdf8", // vibrant aqua
+      bgColor: "#020b12",
+      themeTag: "🎨 PIXEL CRAFT VIBE",
+      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(56,189,248,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(251,113,133,0.15) 0%, transparent 60%)",
+      cyberAccent: "#fb7185",
+    };
+  }
+
+  // 5. Systems Architect (🧱) & Backend Specialist (⚙️) - Console Crimson Theme
+  if (archLower.includes("systems") || archLower.includes("backend") || archLower.includes("architect")) {
+    return {
+      accentColor: "#f97316", // bronze rust
+      bgColor: "#0e0602",
+      themeTag: "⚙️ CONSOLE MONOLITH VIBE",
+      gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(249,115,22,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(185,28,28,0.15) 0%, transparent 60%)",
+      cyberAccent: "#b91c1c",
+    };
+  }
+
+  // 6. Default / Full Stack (🏆)
   return {
     accentColor: "#00ff64", // acid neon green
-    bgColor: "#080b0f",
-    themeTag: "[FULL_STACK_FLOW]",
-    gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(0,255,100,0.15) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(0,200,255,0.12) 0%, transparent 60%)",
+    bgColor: "#030c08",
+    themeTag: "🏆 QUANTUM FLOW VIBE",
+    gradientBloom: "radial-gradient(ellipse at 80% 20%, rgba(0,255,100,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(0,200,255,0.15) 0%, transparent 60%)",
     cyberAccent: "#00c8ff",
   };
 }
 
 /* ═══════════════════════════════════════════════════════
    CARD 1 — OBSIDIAN TERMINAL (Tech-Fest Edition)
-   Dark cyberpunk monospace ticket, glowing accents, 
-   dynamic theme tags and high-contrast grids
 ═══════════════════════════════════════════════════════ */
 function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
   const bar = (v: number) => "▓".repeat(Math.round(v / 10)) + "░".repeat(10 - Math.round(v / 10));
@@ -142,21 +166,15 @@ function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) 
         backgroundSize: "25px 25px",
       }} />
 
-      {/* diagonal aesthetic accent */}
+      {/* diagonal circle design */}
       <div style={{
         position: "absolute", right: -50, top: -50,
         width: 300, height: 300,
         border: `1px solid ${c.accentColor}15`,
         borderRadius: "50%",
       }} />
-      <div style={{
-        position: "absolute", right: -10, top: -10,
-        width: 200, height: 200,
-        border: `1px dashed ${c.accentColor}10`,
-        borderRadius: "50%",
-      }} />
 
-      {/* glowing top neon bar */}
+      {/* glowing top neon laser bar */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0,
         height: 4,
@@ -167,10 +185,9 @@ function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) 
       {/* scan decorative line */}
       <div style={{ position: "absolute", left: 48, top: 0, bottom: 0, width: 1, background: `${c.accentColor}15` }} />
 
-      {/* content container */}
       <div style={{ position: "relative", zIndex: 1, padding: "44px 52px" }}>
 
-        {/* Header Section */}
+        {/* Header row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32 }}>
           <div>
             <div style={{ fontSize: 10, color: `${c.accentColor}bb`, letterSpacing: 4, marginBottom: 10, fontWeight: "bold" }}>
@@ -200,7 +217,7 @@ function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) 
           </div>
         </div>
 
-        {/* Tech-Fest badges */}
+        {/* Dynamic customized merit badges */}
         <div style={{ display: "flex", gap: 10, marginBottom: 36 }}>
           {p.roles.map((r, i) => (
             <span key={r} style={{
@@ -247,7 +264,7 @@ function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) 
           ))}
         </div>
 
-        {/* Footer ticket footer */}
+        {/* Footer */}
         <div style={{
           position: "absolute", bottom: 36, left: 52, right: 52,
           display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -270,8 +287,6 @@ function ObsidianCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) 
 
 /* ═══════════════════════════════════════════════════════
    CARD 2 — PAPER SYSTEM (Brutalist Tech-Fest Poster)
-   High-contrast brutalist zine design, custom graphic stamps,
-   bold ink borders, and typeface design accents
 ═══════════════════════════════════════════════════════ */
 function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
   return (
@@ -287,17 +302,17 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
       borderRadius: "16px",
       boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
     }}>
-      {/* grain paper texture */}
+      {/* grain zine paper texture */}
       <div style={{
         position: "absolute", inset: 0,
         backgroundImage: "radial-gradient(circle, #0000000a 1px, transparent 1px)",
         backgroundSize: "3px 3px",
       }} />
 
-      {/* brutalist solid left accent block */}
+      {/* brutalist block */}
       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 12, background: "#0a0a0a" }} />
 
-      {/* zine ticket header stamp */}
+      {/* brutalist ticket header */}
       <div style={{
         position: "absolute", top: 0, left: 12, right: 0, height: 52,
         background: "#0a0a0a",
@@ -318,7 +333,6 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
         </div>
       </div>
 
-      {/* main body */}
       <div style={{ position: "relative", zIndex: 1, padding: "76px 44px 32px 48px" }}>
 
         {/* big name */}
@@ -352,7 +366,7 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
             <div style={{ fontSize: 10, color: "#0a0a0a66", marginTop: -4, fontWeight: "bold" }}>OUT OF 100</div>
           </div>
 
-          {/* dynamic subscores mapping */}
+          {/* dynamic subscores */}
           {[["CONSISTENCY", p.stats.consistency], ["BRANDING", p.stats.profile], ["OPEN SOURCE", p.stats.openSource]].map(([label, val], i) => (
             <div key={label as string} style={{
               flex: 1,
@@ -362,14 +376,13 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
             }}>
               <div style={{ fontSize: 9, color: "#0a0a0a66", letterSpacing: 2, fontWeight: "bold", textTransform: "uppercase" }}>{label}</div>
               <div style={{ fontSize: 40, fontWeight: 900, color: "#0a0a0a", letterSpacing: -2, lineHeight: 1 }}>{val}</div>
-              {/* solid black brutalist progress bar */}
               <div style={{ height: 6, background: "rgba(0,0,0,0.06)", border: "1px solid #0a0a0a", position: "relative" }}>
                 <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${val}%`, background: "#0a0a0a" }} />
               </div>
             </div>
           ))}
 
-          {/* heavy rank badge */}
+          {/* rank badge */}
           <div style={{
             padding: "16px 20px",
             borderLeft: "3px solid #0a0a0a",
@@ -383,13 +396,14 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
           </div>
         </div>
 
-        {/* footer stamp panel */}
+        {/* footer */}
         <div style={{
           marginTop: 18, display: "flex", justifyContent: "space-between", alignItems: "center",
         }}>
           <div style={{ fontSize: 10, color: "#0a0a0a44", letterSpacing: 2, fontWeight: "bold" }}>dev.report_spec // git-xray</div>
           <div style={{ fontSize: 10, color: "#0a0a0a44", letterSpacing: 2, fontWeight: "bold" }}>SCAN FREE · NO SIGN-IN · 30S</div>
-          {/* dynamic color ink-stamp depending on profile customizations */}
+          
+          {/* custom color matching ink stamp */}
           <div style={{
             border: `3px double ${c.accentColor}`, padding: "4px 14px",
             fontSize: 11, color: c.accentColor, letterSpacing: 4, fontWeight: "extrabold",
@@ -408,8 +422,6 @@ function PaperCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
 
 /* ═══════════════════════════════════════════════════════
    CARD 3 — CYBER-GLOW (Tech-Fest Ticket Special)
-   Deep space canvas, glowing dynamic mesh gradient bloom,
-   glassmorphic widgets, and glowing neon ring meters
 ═══════════════════════════════════════════════════════ */
 function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
   const pct = (v: number) => `${v}%`;
@@ -435,14 +447,14 @@ function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
         filter: "blur(40px)",
       }} />
 
-      {/* Cyber mesh texture grid */}
+      {/* Cyber grid texture */}
       <div style={{
         position: "absolute", inset: 0,
         backgroundImage: `linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)`,
         backgroundSize: "40px 40px",
       }} />
 
-      {/* Glowing horizontal laser boundary */}
+      {/* Glowing top boundary laser line */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: 1,
         background: `linear-gradient(90deg, transparent, ${c.accentColor}ee 30%, ${c.cyberAccent}ee 70%, transparent)`,
@@ -521,7 +533,7 @@ function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
           }}>{p.rank}</span>
         </div>
 
-        {/* Dynamic glassmorphic metrics widgets */}
+        {/* Dynamic metrics widgets */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
           {[
             ["Consistency", p.stats.consistency, c.accentColor, `${c.accentColor}06`],
@@ -537,7 +549,6 @@ function CyberGlowCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations })
             }}>
               <div style={{ fontSize: 11, color: "#64748b", letterSpacing: 0.5, marginBottom: 8, fontWeight: "bold" }}>{label as string}</div>
               <div style={{ fontSize: 36, fontWeight: 900, color: "#f8fafc", letterSpacing: -2, lineHeight: 1, marginBottom: 10 }}>{val}%</div>
-              {/* glowing gauge bar */}
               <div style={{ height: 4, background: "rgba(255,255,255,0.04)", borderRadius: 2 }}>
                 <div style={{ height: "100%", width: pct(val as number), background: color as string, borderRadius: 2, boxShadow: `0 0 8px ${color}` }} />
               </div>
@@ -571,12 +582,12 @@ export default function ShareCard({ data, username, name }: ShareCardProps) {
   const [activeTab, setActiveTab] = useState<"obsidian" | "paper" | "cyber">("cyber");
   const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
 
-  // Prepare profile fields dynamically mapped from API response
+  // Prepare dynamic merit badges based on stats
   const profileData: ProfileThemeData = {
     username: username,
     name: name || username,
     score: data.score,
-    roles: [data.archetype, data.techIdentity],
+    roles: getDeveloperStatsBadges(data), // customized dynamically based on their actual stats!
     rank: `Top ${data.percentile}%`,
     stats: {
       consistency: data.consistencyScore,
@@ -589,7 +600,7 @@ export default function ShareCard({ data, username, name }: ShareCardProps) {
   // Obtain brand customizations dynamically based on tag/archetype
   const customizations = getDynamicCustomizations(data.archetype, data.techIdentity);
 
-  // Prepare highly descriptive recruiter-ready social post copy
+  // Prepare recruiter-ready social post copy
   const shareText = `🚀 Just got my GitHub footprint X-rayed! 🔎
 
 📊 Overall Score: ${data.score}/100
@@ -611,24 +622,28 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
     const url = `https://githubx-ray.vercel.app/${username}`;
 
     if (platform === "linkedin") {
-      // 1. Copy marketing post automatically to clipboard
-      navigator.clipboard.writeText(shareText).then(() => {
-        // 2. Open our premium alert notification overlay!
-        setShowLinkedInAlert(true);
-      }).catch(() => {
-        // Fallback if clipboard fails
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
-      });
+      // 1. Attempt to write to clipboard
+      try {
+        navigator.clipboard.writeText(shareText);
+      } catch (err) {
+        console.warn("Clipboard access blocked:", err);
+      }
+      // 2. ALWAYS display our beautiful instructions alert overlay!
+      setShowLinkedInAlert(true);
     } else if (platform === "x") {
-      const xText = `My GitHub footprint got X-rayed! 👀\nScore: ${data.score}/100\nArchetype: ${data.archetype}\n\nGet your status card free here:`;
+      const xText = `My GitHub got X-rayed! 👀\nScore: ${data.score}/100\nArchetype: ${data.archetype} (${profileData.rank})\n\nScan yours free at:`;
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(url)}`,
         "_blank"
       );
     } else {
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert("Recruiter-optimized marketing copy and link copied to clipboard!");
-      });
+      try {
+        navigator.clipboard.writeText(shareText).then(() => {
+          alert("📋 Recruiter-ready stats copy copied to clipboard!");
+        });
+      } catch (err) {
+        alert("Clipboard blocked. You can manually copy the post copy!");
+      }
     }
   };
 
@@ -719,7 +734,7 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
         ))}
       </div>
 
-      {/* High-Resolution Poster Card Preview (Scrollable responsive wrapper) */}
+      {/* High-Resolution Poster Card Preview */}
       <div className="w-full overflow-x-auto overflow-y-hidden rounded-xl border border-[#242424] bg-[#050505] mb-5 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-950 flex justify-start items-center p-1">
         <div style={{ width: 900, height: 500, flexShrink: 0 }} className="mx-auto select-none">
           {activeTab === "obsidian" && <ObsidianCard p={profileData} c={customizations} />}
@@ -728,11 +743,11 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
         </div>
       </div>
 
-      {/* Helpful Instructions banner */}
+      {/* Dynamic Vibe Tag specific helpful banner */}
       <div className="bg-[#181818] border border-[#242424] rounded-lg p-[14px] flex items-start gap-3 mb-6">
-        <span className="text-[14px] leading-none select-none">📸</span>
+        <span className="text-[14px] leading-none select-none">🎯</span>
         <div className="text-[11.5px] leading-relaxed text-[#b8b8b0]">
-          <strong className="text-[#ebebeb]">Custom {customizations.themeTag} Branding Applied:</strong> We optimized these themes for your specific code profile. <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post!
+          <strong className="text-[#ebebeb]">Custom {customizations.themeTag} Theme Mapped:</strong> We detected your unique GitHub footprint and styled these themes specifically to match your vibe! <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post.
         </div>
       </div>
 
