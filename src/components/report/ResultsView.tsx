@@ -32,13 +32,29 @@ function scoreBg(score: number): string {
 export default function ResultsView({ report, onReset }: ResultsViewProps) {
   const [reviewMode, setReviewMode] = useState<ReviewMode>("standard");
   const [barsAnimated, setBarsAnimated] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const handleCopy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+    trackEvent("headline_copied", { type: key, username: report.profile.username });
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setBarsAnimated(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard } = report;
+  const { profile, scores, archetype, archetypeEmoji, topRepositories, techStack, recruiterImpression, review, improvements, shareCard, headlines } = report;
+
+  const defaultHeadlines = {
+    linkedin: `${techStack.primaryIdentity || "Full Stack Developer"} Specialized in ${techStack.primary[0] || "Web Technologies"} & High-Performance Architectures`,
+    githubReadme: `### Hi there! 👋\n\n[![Git-XRay Competency](https://img.shields.io/badge/Git--XRay-Senior--Mid-1D9E75?style=for-the-badge)](https://git-xray.vercel.app/${profile.username})\n\n* **Primary Stack:** ${techStack.primary.join(", ") || "Full Stack"}\n* **Code Stewardship:** Scanned & Verified by Git-XRay\n\n*Generated with [Git-XRay](https://git-xray.vercel.app/${profile.username})*`,
+    twitter: `${techStack.primary[0] || "Software"} engineer, MVP builder, and clean code enthusiast. Rated ${scores.overall}% developer competency rating on Git-XRay.`,
+  };
+
+  const activeHeadlines = headlines || defaultHeadlines;
 
   const subscores = [
     { label: "Consistency", value: scores.consistency },
@@ -236,6 +252,79 @@ export default function ResultsView({ report, onReset }: ResultsViewProps) {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Copyable Bio & README Badges */}
+          <div className="bg-[#101010] border border-[#242424] rounded-[12px] p-5">
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#5DCAA5] mb-3 flex items-center gap-2">
+              <span className="inline-block w-[3.5px] h-[12px] bg-[#1D9E75] rounded-[2px]" />
+              📋 Instantly Copyable Bio & README Badges
+            </div>
+            <p className="text-[11.5px] text-[#787672] leading-normal mb-4">
+              Instantly upgrade your online footprint. Click any box to copy these personalized dev headlines and profile markdown components!
+            </p>
+
+            <div className="flex flex-col gap-4">
+              {/* LinkedIn */}
+              <div className="bg-[#181818] border border-[#242424] rounded-lg p-3 relative hover:border-[#1D9E75] transition-all group">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[9.5px] font-bold text-[#ebebeb] uppercase tracking-wider">💼 LinkedIn Executive Bio</span>
+                  <button
+                    onClick={() => handleCopy(activeHeadlines.linkedin, "linkedin")}
+                    className={`text-[9.5px] px-2 py-1 rounded font-mono transition-all border ${
+                      copiedKey === "linkedin"
+                        ? "bg-[#085041] border-[#1D9E75] text-[#5DCAA5]"
+                        : "bg-transparent border-[#3e3e3e] text-[#b8b8b0] hover:border-[#1D9E75] hover:text-[#5DCAA5]"
+                    }`}
+                  >
+                    {copiedKey === "linkedin" ? "Copied! ✓" : "Copy"}
+                  </button>
+                </div>
+                <div className="text-[11.5px] text-[#ebebeb] leading-relaxed select-all font-sans font-medium">
+                  {activeHeadlines.linkedin}
+                </div>
+              </div>
+
+              {/* GitHub README Block */}
+              <div className="bg-[#181818] border border-[#242424] rounded-lg p-3 relative hover:border-[#1D9E75] transition-all group">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[9.5px] font-bold text-[#ebebeb] uppercase tracking-wider">💻 GitHub Profile README.md Block</span>
+                  <button
+                    onClick={() => handleCopy(activeHeadlines.githubReadme, "github")}
+                    className={`text-[9.5px] px-2 py-1 rounded font-mono transition-all border ${
+                      copiedKey === "github"
+                        ? "bg-[#085041] border-[#1D9E75] text-[#5DCAA5]"
+                        : "bg-transparent border-[#3e3e3e] text-[#b8b8b0] hover:border-[#1D9E75] hover:text-[#5DCAA5]"
+                    }`}
+                  >
+                    {copiedKey === "github" ? "Copied! ✓" : "Copy Markdown"}
+                  </button>
+                </div>
+                <pre className="text-[10px] font-mono text-[#a0a09a] overflow-x-auto whitespace-pre-wrap select-all leading-normal bg-[#0e0e0e] p-2 rounded border border-[#1a1a1a]">
+                  {activeHeadlines.githubReadme}
+                </pre>
+              </div>
+
+              {/* Twitter/X */}
+              <div className="bg-[#181818] border border-[#242424] rounded-lg p-3 relative hover:border-[#1D9E75] transition-all group">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[9.5px] font-bold text-[#ebebeb] uppercase tracking-wider">🐦 Twitter / X Bio Tagline</span>
+                  <button
+                    onClick={() => handleCopy(activeHeadlines.twitter, "twitter")}
+                    className={`text-[9.5px] px-2 py-1 rounded font-mono transition-all border ${
+                      copiedKey === "twitter"
+                        ? "bg-[#085041] border-[#1D9E75] text-[#5DCAA5]"
+                        : "bg-transparent border-[#3e3e3e] text-[#b8b8b0] hover:border-[#1D9E75] hover:text-[#5DCAA5]"
+                    }`}
+                  >
+                    {copiedKey === "twitter" ? "Copied! ✓" : "Copy"}
+                  </button>
+                </div>
+                <div className="text-[11.5px] text-[#ebebeb] leading-relaxed select-all font-sans font-medium">
+                  {activeHeadlines.twitter}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Recruiter Impression */}

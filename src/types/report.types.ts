@@ -9,6 +9,13 @@ export interface AnalysisReport {
   review: ReviewData;
   improvements: string[];
   shareCard: ShareCardData;
+  headlines?: HeadlineData;
+}
+
+export interface HeadlineData {
+  linkedin: string;
+  githubReadme: string;
+  twitter: string;
 }
 
 export interface ProfileData {

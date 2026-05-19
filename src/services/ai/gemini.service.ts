@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { DeveloperSignals } from "@/types/signals.types";
-import { ScoreData, RecruiterImpression, ReviewData } from "@/types/report.types";
+import { ScoreData, RecruiterImpression, ReviewData, HeadlineData } from "@/types/report.types";
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
@@ -32,6 +32,7 @@ export class GeminiService {
     review: ReviewData;
     recruiterImpression: RecruiterImpression[];
     improvements: string[];
+    headlines?: HeadlineData;
   }> {
     console.log("[AI Engine] Generating recruiter review for:", username);
 
@@ -89,7 +90,12 @@ Expected JSON Schema:
     "Specific high-impact actionable recommendation 3",
     "Specific high-impact actionable recommendation 4",
     "Specific high-impact actionable recommendation 5"
-  ]
+  ],
+  "headlines": {
+    "linkedin": "A high-impact executive tagline tailored for LinkedIn based on their tech specialty (approx 10-15 words). Include their top languages and competency tier (e.g., 'JavaScript & Go Developer | specialized in production deployability & clean code architecture'). Do not include names.",
+    "githubReadme": "A clean markdown bio snippet optimized to embed in their GitHub profile README.md (approx 30-50 words). Include a dynamic shields.io badge referencing their rank tier and a signature green accent. Highlight their top language and consistency score.",
+    "twitter": "A sharp, high-vibe, slightly cheeky developer bio for Twitter/X (max 160 characters). Emphasize their top building focus and custom trope."
+  }
 }
 
 Ensure all lists and impressions directly reference the candidate's technologies, languages, and repo names rather than generic advice.
@@ -107,6 +113,7 @@ Ensure all lists and impressions directly reference the candidate's technologies
         review: data.review,
         recruiterImpression: data.recruiterImpression,
         improvements: data.improvements,
+        headlines: data.headlines,
       };
     } catch (error) {
       console.error("[AI Engine Error] Failed to generate AI review:", error);
@@ -174,6 +181,11 @@ Ensure all lists and impressions directly reference the candidate's technologies
           "Pin your highest-quality original repositories to clear up clutter",
           "Add structured setup and installation instructions to your documentation",
         ],
+        headlines: {
+          linkedin: `${signals.primaryTechIdentity || "Full Stack Developer"} Specialized in ${signals.topLanguage || "Web Technologies"} & Clean Code Architectures`,
+          githubReadme: `### Hi there! 👋\n\n[![Git-XRay Competency](https://img.shields.io/badge/Git--XRay-Senior--Mid-1D9E75?style=for-the-badge)](https://git-xray.vercel.app/${username})\n\n* **Primary Language:** ${signals.topLanguage || "JavaScript"} Specialist\n* **Code Stewardship:** Scanned & Verified by Git-XRay\n\n*Generated with [Git-XRay](https://git-xray.vercel.app/${username})*`,
+          twitter: `${signals.topLanguage || "Software"} developer, draft MVP gravedigger, and clean architect. Verified at ${scores.overall}% developer competency rating on Git-XRay.`,
+        },
       };
     }
   }
