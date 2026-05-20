@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ShareCardData } from "@/types/report.types";
 import { trackEvent } from "@/utils/analytics";
 
@@ -443,7 +444,13 @@ function XRayDevCard({ p, c }: { p: ProfileThemeData; c: CardCustomizations }) {
    MAIN SHARE CARD WRAPPER
 ═══════════════════════════════════════════════════════ */
 export default function ShareCard({ data, username, name }: ShareCardProps) {
-  const [showLinkedInAlert, setShowLinkedInAlert] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    submessage?: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // Prepare profile fields dynamically mapped from API response
   const profileData: ProfileThemeData = {
@@ -480,87 +487,243 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
 
 #github #developer #coding #opensource #softwareengineering #career`;
 
-  const handleShare = (platform: "linkedin" | "x" | "copy") => {
+  const handleDownloadCard = async () => {
+    if (!cardRef.current) return;
+    setIsDownloading(true);
+    trackEvent("download_card_clicked", { username });
+
+    // 1. Temporarily mock document.styleSheets to bypass CORS SecurityErrors
+    const originalStyleSheetsDescriptor = Object.getOwnPropertyDescriptor(
+      Document.prototype,
+      "styleSheets"
+    );
+
+    try {
+      // Redefine document.styleSheets getter to filter out stylesheets that throw SecurityError
+      Object.defineProperty(document, "styleSheets", {
+        get: () => {
+          if (!originalStyleSheetsDescriptor || !originalStyleSheetsDescriptor.get) {
+            return [];
+          }
+          const allSheets = originalStyleSheetsDescriptor.get.call(document);
+          return Array.from(allSheets).filter((sheet: any) => {
+            try {
+              // Access cssRules to check for CORS SecurityError
+              const rules = sheet.cssRules;
+              return true;
+            } catch (e) {
+              console.warn(
+                `[Download Card CORS Bypass] Skipping restricted stylesheet: ${sheet.href || "inlined"}`
+              );
+              return false;
+            }
+          });
+        },
+        configurable: true,
+      });
+
+      const { toPng } = await import("html-to-image");
+      
+      // Wait a brief moment for DOM synchronization
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 3, // Premium ultra-crisp resolution for retina-perfect badges
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left",
+        },
+      });
+
+      const link = document.createElement("a");
+      link.download = `${username}-xray-card.png`;
+      link.href = dataUrl;
+      link.click();
+
+      setToast({
+        message: "X-Ray Card Downloaded ✓",
+        submessage: "Ready to be attached to your LinkedIn or X/Twitter post!",
+        type: "success",
+      });
+      setTimeout(() => setToast(null), 5000);
+    } catch (err) {
+      console.error("[Download Card Error]", err);
+      setToast({
+        message: "Download Failed ✕",
+        submessage: "Please take a manual screenshot of the card below.",
+        type: "error",
+      });
+      setTimeout(() => setToast(null), 6000);
+    } finally {
+      // 2. Restore the original document.styleSheets descriptor
+      if (originalStyleSheetsDescriptor) {
+        Object.defineProperty(document, "styleSheets", originalStyleSheetsDescriptor);
+      } else {
+        try {
+          delete (document as any).styleSheets;
+        } catch (e) {}
+      }
+      setIsDownloading(false);
+    }
+  };
+
+  const handleShare = async (platform: "linkedin" | "x" | "copy") => {
     trackEvent("share_clicked", { platform, username });
     const url = `https://githubx-ray.vercel.app/${username}`;
 
     if (platform === "linkedin") {
       // 1. Copy marketing post automatically to clipboard
+      let copySuccess = false;
       try {
-        navigator.clipboard.writeText(shareText);
+        await navigator.clipboard.writeText(shareText);
+        copySuccess = true;
       } catch (err) {
         console.warn("Clipboard access blocked:", err);
       }
-      // 2. ALWAYS display our beautiful instructions alert overlay!
-      setShowLinkedInAlert(true);
+
+      // 2. Open LinkedIn in a new tab immediately
+      const newTab = window.open("https://www.linkedin.com/feed/", "_blank");
+      
+      // Check if popup blocker blocked it
+      const popupBlocked = !newTab || newTab.closed || typeof newTab.closed === "undefined";
+
+      if (copySuccess) {
+        if (popupBlocked) {
+          setToast({
+            message: "LinkedIn text copied ✓",
+            submessage: "⚠️ Popup blocker blocked opening LinkedIn. Paste the text manually on LinkedIn!",
+            type: "info",
+          });
+        } else {
+          setToast({
+            message: "LinkedIn post text copied ✓",
+            submessage: "Attach your downloaded X-Ray card and paste the text on LinkedIn.",
+            type: "success",
+          });
+        }
+      } else {
+        if (popupBlocked) {
+          setToast({
+            message: "LinkedIn Copy Blocked ✕",
+            submessage: "Please click 'Copy Post Copy' manually and paste on LinkedIn.",
+            type: "error",
+          });
+        } else {
+          setToast({
+            message: "Opening LinkedIn...",
+            submessage: "Use the 'Copy Post Copy' button to grab the text, then attach your card on LinkedIn!",
+            type: "info",
+          });
+        }
+      }
+      setTimeout(() => setToast(null), 7000);
+
     } else if (platform === "x") {
+      let copySuccess = false;
+      try {
+        await navigator.clipboard.writeText(shareText);
+        copySuccess = true;
+      } catch (err) {
+        console.warn("Clipboard access blocked:", err);
+      }
+
       const xText = `My GitHub footprint got X-rayed! 👀\nScore: ${data.score}/100\nArchetype: ${data.archetype}\n\nGet your status card free here:`;
-      window.open(
+      const newTab = window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(url)}`,
         "_blank"
       );
+      const popupBlocked = !newTab || newTab.closed || typeof newTab.closed === "undefined";
+
+      if (popupBlocked) {
+        setToast({
+          message: "X/Twitter Post Prepped ✓",
+          submessage: "⚠️ Popup blocker active. Please open X manually to post your X-Ray card!",
+          type: "info",
+        });
+      } else {
+        setToast({
+          message: "Post copy prepped on X ✓",
+          submessage: "Attach your downloaded X-Ray card to complete the post!",
+          type: "success",
+        });
+      }
+      setTimeout(() => setToast(null), 5000);
+
     } else {
       try {
-        navigator.clipboard.writeText(shareText).then(() => {
-          alert("📋 Recruiter-ready stats copy copied to clipboard!");
+        await navigator.clipboard.writeText(shareText);
+        setToast({
+          message: "Copied post text ✓",
+          submessage: "Ready to paste on your favorite platform.",
+          type: "success",
         });
       } catch (err) {
-        alert("Clipboard blocked. You can manually copy the post copy!");
+        setToast({
+          message: "Copy Failed ✕",
+          submessage: "Clipboard blocked. Please copy the text block manually.",
+          type: "error",
+        });
       }
+      setTimeout(() => setToast(null), 5000);
     }
   };
 
   return (
     <div className="bg-[#101010] border border-[#242424] rounded-[16px] p-6 mb-[10px]">
       
-      {/* Dynamic Clipboard Copy Overlay Modal */}
-      {showLinkedInAlert && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-[#101010] border border-[#0F6E56] rounded-2xl max-w-[500px] w-full p-6 shadow-[0_0_30px_rgba(29,158,117,0.15)] animate-scale-up">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl select-none">📋</span>
-              <h4 className="text-[15px] font-extrabold text-[#5DCAA5] tracking-tight font-mono">
-                LINKEDIN POST COPIED!
-              </h4>
-            </div>
-            
-            <p className="text-[12px] leading-relaxed text-[#b8b8b0] mb-4">
-              We pre-generated an engaging, recruiter-optimized post copy with your scores and copied it directly to your clipboard.
-            </p>
-
-            {/* Post Preview box */}
-            <div className="bg-[#161616] border border-[#242424] rounded-lg p-3 text-[10.5px] font-mono text-[#787672] max-h-[160px] overflow-y-auto mb-5 leading-relaxed whitespace-pre-wrap select-text">
-              {shareText}
-            </div>
-
-            <div className="bg-[#082a21] border border-[#0F6E56] rounded-lg p-3 flex gap-2 items-start mb-5">
-              <span className="text-[12px] mt-[1px]">💡</span>
-              <span className="text-[11px] leading-normal text-[#5DCAA5]">
-                <strong>To post:</strong> LinkedIn will open next. Simply paste <strong>(Ctrl+V)</strong> your post text and attach your screenshot!
-              </span>
-            </div>
-
-            <div className="flex gap-2 justify-end">
-              <button
-                onClick={() => setShowLinkedInAlert(false)}
-                className="px-4 h-[38px] rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] font-bold cursor-pointer transition-colors hover:border-[#ebebeb] hover:text-white"
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={`fixed bottom-6 right-6 z-[100] max-w-[340px] w-full border rounded-xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] ${
+              toast.type === "success"
+                ? "bg-[#101010]/95 backdrop-blur-md border-[#1D9E75] shadow-[0_10px_30px_rgba(29,158,117,0.15)]"
+                : toast.type === "error"
+                ? "bg-[#101010]/95 backdrop-blur-md border-[#ea4335] shadow-[0_10px_30px_rgba(234,67,53,0.15)]"
+                : "bg-[#101010]/95 backdrop-blur-md border-[#f9ab00] shadow-[0_10px_30px_rgba(249,171,0,0.15)]"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className={`rounded-full w-5 h-5 flex items-center justify-center text-[10px] select-none font-bold mt-[1px] ${
+                toast.type === "success"
+                  ? "bg-[#082a21] border border-[#0F6E56] text-[#5DCAA5]"
+                  : toast.type === "error"
+                  ? "bg-[#2d1210] border border-[#501c18] text-[#ea4335]"
+                  : "bg-[#2a2008] border border-[#503d08] text-[#f9ab00]"
+              }`}>
+                {toast.type === "success" ? "✓" : toast.type === "error" ? "✕" : "⚠️"}
+              </div>
+              <div className="flex-grow">
+                <div className={`text-[11.5px] font-bold font-mono leading-tight ${
+                  toast.type === "success"
+                    ? "text-[#5DCAA5]"
+                    : toast.type === "error"
+                    ? "text-[#ea4335]"
+                    : "text-[#f9ab00]"
+                }`}>
+                  {toast.message}
+                </div>
+                {toast.submessage && (
+                  <div className="text-[10px] text-[#787672] mt-1 leading-normal">
+                    {toast.submessage}
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={() => setToast(null)}
+                className="text-[#787672] hover:text-[#ebebeb] text-[11px] font-mono leading-none p-1"
               >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setShowLinkedInAlert(false);
-                  const url = `https://githubx-ray.vercel.app/${username}`;
-                  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
-                }}
-                className="px-5 h-[38px] rounded-lg bg-[#085041] border border-[#1D9E75] text-[#5DCAA5] font-mono text-[10px] font-bold cursor-pointer transition-colors hover:bg-[#0F6E56]"
-              >
-                Open LinkedIn & Paste!
+                ✕
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Title & Introduction */}
       <div className="mb-6">
@@ -571,13 +734,13 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
           Personalized GitHub X-Ray Badge
         </h3>
         <p className="text-[12px] text-[#787672] mt-1">
-          A completely custom, visual developer spec ticket dynamically optimized for your GitHub stack and stats footprint. Screenshot and share your status!
+          A completely custom, visual developer spec ticket dynamically optimized for your GitHub stack and stats footprint. Download and share your status!
         </p>
       </div>
 
       {/* High-Resolution Poster Card Preview */}
       <div className="w-full overflow-x-auto overflow-y-hidden rounded-xl border border-[#242424] bg-[#050505] mb-5 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-950 flex justify-start items-center p-1">
-        <div style={{ width: 900, height: 500, flexShrink: 0 }} className="mx-auto select-none">
+        <div ref={cardRef} style={{ width: 900, height: 500, flexShrink: 0 }} className="mx-auto select-none">
           <XRayDevCard p={profileData} c={customizations} />
         </div>
       </div>
@@ -586,41 +749,62 @@ GitHub X-Ray gives developers deep, recruiter-ready analysis of their coding ide
       <div className="bg-[#181818] border border-[#242424] rounded-lg p-[14px] flex items-start gap-3 mb-6">
         <span className="text-[14px] leading-none select-none">🎯</span>
         <div className="text-[11.5px] leading-relaxed text-[#b8b8b0]">
-          <strong className="text-[#ebebeb]">GitHub X-Ray {customizations.stickerText} Theme Applied:</strong> We detected your primary identity tags and dynamically calibrated these vector stars, stickers, and color presets to fit your developer brand perfectly. <span className="text-[#5DCAA5] font-semibold">Screenshot this card</span> to attach to your post!
+          <strong className="text-[#ebebeb]">Your recruiter-ready developer identity card:</strong> We detected your primary identity tags and dynamically calibrated these vector stars, stickers, and color presets to fit your developer brand perfectly. <span className="text-[#5DCAA5] font-semibold">Download the card</span> and attach it on LinkedIn!
         </div>
       </div>
 
       <div className="h-px bg-[#1e1e1e] mb-4" />
 
       {/* Share Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="text-[10px] text-[#4a4a48] tracking-wide mb-2 sm:mb-0">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="text-[10px] text-[#4a4a48] tracking-wide mb-1 md:mb-0 w-full md:w-auto text-left">
           githubxray.dev · Share your developer status card
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="grid grid-cols-2 md:flex md:flex-row gap-2.5 w-full md:w-auto">
+          <button
+            id="download-card-btn"
+            onClick={handleDownloadCard}
+            disabled={isDownloading}
+            className="w-full md:w-auto px-4 h-9 rounded-lg bg-[#5DCAA5] border border-[#1D9E75] text-[#101010] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:bg-[#48b493] disabled:bg-[#1a1a1a] disabled:border-[#2e2e2e] disabled:text-[#787672] disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center gap-1.5"
+          >
+            {isDownloading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-1 h-3 w-3 text-[#101010]" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Exporting...
+              </>
+            ) : (
+              <>📥 Download X-Ray Card</>
+            )}
+          </button>
           <button
             id="share-linkedin-btn"
             onClick={() => handleShare("linkedin")}
-            className="flex-1 sm:flex-initial px-4 h-9 rounded-lg border border-[#0F6E56] bg-transparent text-[#5DCAA5] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:bg-[#085041] whitespace-nowrap"
+            className="w-full md:w-auto px-4 h-9 rounded-lg border border-[#0F6E56] bg-transparent text-[#5DCAA5] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:bg-[#085041] whitespace-nowrap flex items-center justify-center gap-1.5"
           >
             💼 Share to LinkedIn
           </button>
           <button
             id="share-x-btn"
             onClick={() => handleShare("x")}
-            className="flex-1 sm:flex-initial px-4 h-9 rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:border-[#1a1a1a] hover:text-[#ebebeb] whitespace-nowrap"
+            className="w-full md:w-auto px-4 h-9 rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:border-[#1a1a1a] hover:text-[#ebebeb] whitespace-nowrap flex items-center justify-center gap-1.5"
           >
             𝕏 Post on X
           </button>
           <button
             id="share-copy-btn"
             onClick={() => handleShare("copy")}
-            className="flex-1 sm:flex-initial px-4 h-9 rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:border-[#1a1a1a] hover:text-[#ebebeb] whitespace-nowrap"
+            className="w-full md:w-auto px-4 h-9 rounded-lg border border-[#2e2e2e] bg-transparent text-[#787672] font-mono text-[10px] font-bold cursor-pointer tracking-[0.03em] transition-colors hover:border-[#1a1a1a] hover:text-[#ebebeb] whitespace-nowrap flex items-center justify-center gap-1.5"
           >
             📋 Copy Post Copy
           </button>
         </div>
       </div>
+      <p className="text-[9.5px] text-[#4a4a48] text-right mt-2 select-none">
+        💡 Clicking share copies post text automatically. Attach your downloaded X-Ray card on LinkedIn!
+      </p>
 
     </div>
   );

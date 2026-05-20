@@ -42,6 +42,7 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap"
           rel="stylesheet"
+          crossOrigin="anonymous"
         />
       </head>
       <body className={`${jetbrainsMono.variable} antialiased`}>{children}</body>
