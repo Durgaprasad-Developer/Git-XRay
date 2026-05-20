@@ -129,28 +129,6 @@ export default function LandingView({ onAnalyze, error }: LandingViewProps) {
           </button>
         ))}
       </div>
-
-      {/* Stats */}
-      <div className="flex gap-10 mt-10 pt-7 border-t border-[#242424]">
-        {[
-          { n: "14K+", l: "Profiles scanned" },
-          { n: "30s", l: "Scan time" },
-          { n: "4.8★", l: "User rating" },
-          { n: "0", l: "Login required" },
-        ].map(({ n, l }) => (
-          <div key={l}>
-            <div
-              className="text-[21px] font-extrabold text-[#ebebeb]"
-              style={{ fontFamily: "Syne, sans-serif" }}
-            >
-              {n}
-            </div>
-            <div className="text-[9px] text-[#787672] mt-[3px] uppercase tracking-[0.08em]">
-              {l}
-            </div>
-          </div>
-        ))}
-      </div>
     </section>
   );
 }
