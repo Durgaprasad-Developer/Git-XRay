@@ -36,3 +36,7 @@ next-env.d.ts
 
 # scratch directory
 /scratch/
+
+# automation directory
+/automation/
+
