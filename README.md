@@ -9,6 +9,8 @@
 
 **Git-XRay** is an AI-powered GitHub profile analysis and review tool. It extracts metadata and repository-level details to compile deterministic developer scores and generates actionable, recruiter-style feedback using the **Google Gemini API**.
 
+🔥 **107 unique users** have used the profile analysis feature all time!
+
 ```txt
 GitHub Username ──> Deterministic Signals & Scores ──> AI-Powered Review
 ```
